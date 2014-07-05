@@ -5,7 +5,7 @@ build/
 # Netbeans specific
 core
 nbproject/*
-!nbproject/project.properities
+!nbproject/project.properties
 !nbproject/project.xml
 
 # Java specific
