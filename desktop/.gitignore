@@ -1,0 +1,26 @@
+# Ant project
+dist/
+build/
+
+# Netbeans specific
+core
+nbproject/*
+!nbproject/project.properities
+!nbproject/project.xml
+
+# Java specific
+*.class
+
+# General swap/backup files
+*.so
+*.log
+*.out
+*~
+*.swp
+*.lock
+
+# Mac OS X clutter
+*.DS_Store
+
+# Windows clutter
+Thumbs.db
