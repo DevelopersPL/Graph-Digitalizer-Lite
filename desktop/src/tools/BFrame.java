@@ -9,6 +9,7 @@ package tools;
 import java.awt.FileDialog;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JSplitPane;
 import javax.swing.JToolBar;
 import marvin.gui.MarvinImagePanel;
 import marvin.image.MarvinImage;
@@ -45,15 +46,20 @@ public class BFrame extends javax.swing.JFrame {
         originalImage = MarvinImageIO.loadImage(filename);
         imagePanelOriginal.setSize(jImagePanel.getWidth(), jImagePanel.getHeight());
         imagePanelOriginal.setImage(originalImage);
-        /*
-         JSplitPane sp1 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,true, jImagePanel, jDataPanel); 
-         sp1.setOneTouchExpandable(true); 
-         sp1.setDividerLocation(150);
-         */
-        JToolBar tb = new JToolBar("wybor"); 
-        tb.add(new JButton("aa"));
-        jMenuButtons.add(tb);
+        
+        JSplitPane sp1 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,true ,jDataPanel ,jImagePanel); 
+        sp1.setOneTouchExpandable(true); 
+        sp1.setDividerLocation(150);
+        add(sp1);
+        
         jImagePanel.add(imagePanelOriginal);
+        
+        /*  Ukrycie komponentow (na pozniej kiedy nie bedziemy na poczatku wczytywac zdjecia odrazu)
+        int a = jMenuButtons.getComponentCount();
+        for (int i=0;i<a;i++)
+            jMenuButtons.getComponent(i).setEnabled(false);
+        */
+        
         setVisible(true);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

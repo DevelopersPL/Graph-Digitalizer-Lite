@@ -31,8 +31,13 @@ package marvin.gui;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.Toolkit;
+import java.awt.Point;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
@@ -43,13 +48,13 @@ import marvin.util.MarvinPluginHistory;
  * Panel to display MarvinImages.
  * @author Gabriel Ambrosio Archanjo
  */
-public class MarvinImagePanel extends JPanel{
+public class MarvinImagePanel extends JPanel implements MouseListener, MouseMotionListener{
 	
-	protected MarvinImage 			image;
+	protected MarvinImage           image;
 	protected MarvinPluginHistory 	history;
-	private boolean					fitSizeToImage;
-	private int						width;
-	private int						height;
+	private boolean			fitSizeToImage;
+	private int			width;
+	private int			height;
 	
 	/**
 	 * Constructor
@@ -57,6 +62,8 @@ public class MarvinImagePanel extends JPanel{
 	public MarvinImagePanel(){
 		super();
 		fitSizeToImage = true;
+                addMouseListener(this);
+                addMouseMotionListener(this);
 	}
 	
 	/**
@@ -146,6 +153,11 @@ public class MarvinImagePanel extends JPanel{
 		if(image != null){
 			g.drawImage(image.getBufferedImage(), 0,0,this);
 		}
+                Graphics2D g2d = (Graphics2D) g;
+                int w = xk-xp;
+                int h = yk-yp;
+                if(clicked)
+                    g2d.draw3DRect(xp, yp, w, h, true);
 	}
 	
 	/**
@@ -155,4 +167,52 @@ public class MarvinImagePanel extends JPanel{
 		image.update();
 		repaint();
 	}
+        
+         @Override
+        public void mouseClicked(MouseEvent e) {
+            //clicked=true;
+            repaint();
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+        }
+        boolean clicked = false;
+        ArrayList<Point> points = new ArrayList<Point>();
+        int xp, yp;
+        @Override
+        public void mousePressed(MouseEvent e) {
+            xp = e.getX();
+            yp = e.getY();
+            clicked=true;
+            
+        }
+        int xk, yk;
+        @Override
+        public void mouseDragged(MouseEvent e){
+            xk = e.getX();
+            yk = e.getY();  
+            repaint();
+        }
+        
+        @Override
+        public void mouseMoved(MouseEvent e){
+
+        }
+        
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            
+            xk = e.getX();
+            yk = e.getY();    
+            clicked=false;  
+            //repaint();
+        }
+
+        
+       
 }
