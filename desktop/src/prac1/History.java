@@ -5,6 +5,7 @@
 package prac1;
 
 import marvin.io.MarvinImageIO;
+import plugins.binarization.Bernsen;
 import tools.BFrame;
 
 /**
@@ -17,6 +18,13 @@ public class History extends BFrame {
 
     public History(String filename) {
         super(filename);
+
+        resultImage = originalImage.clone();
+        tempPlugin = new Bernsen();
+        tempPlugin.process(resultImage, resultImage);
+        resultImage.update();
+
+        imagePanelOriginal.setImage(resultImage);
     }
 
     /**

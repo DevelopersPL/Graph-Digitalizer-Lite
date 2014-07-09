@@ -6,16 +6,15 @@
 
 package tools;
 
-import java.awt.FileDialog;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JSplitPane;
-import javax.swing.JToolBar;
 import marvin.gui.MarvinImagePanel;
 import marvin.image.MarvinImage;
 import marvin.io.MarvinImageIO;
 import marvin.plugin.MarvinImagePlugin;
 import marvin.util.MarvinPluginHistory;
+import plugins.HistogramStretching;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
  *
@@ -275,6 +274,13 @@ public class BFrame extends javax.swing.JFrame {
             if(katalog!=null && plik!=null){
                 originalImage = MarvinImageIO.loadImage(katalog + plik);
                 imagePanelOriginal.setImage(originalImage);
+
+                resultImage = originalImage.clone();
+                tempPlugin = new HistogramStretching();
+                tempPlugin.process(resultImage, resultImage);
+                resultImage.update();
+
+                imagePanelOriginal.setImage(resultImage);
             }
     }
 
