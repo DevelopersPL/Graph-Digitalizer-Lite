@@ -29,9 +29,11 @@ public class Threshold extends MarvinAbstractImagePlugin {
     @Override
     public void process(MarvinImage imageIn, MarvinImage imageOut, MarvinAttributes ma, MarvinImageMask mim, boolean bln) {
         int threshold = (int) getAttribute("Threshold");
+        boolean[][] mask = mim.getMaskArray();
 
         for (int y = 0; y < imageIn.getHeight(); y++) {
             for (int x = 0; x < imageIn.getWidth(); x++) {
+                if (!mask[x][y]) continue;
 
                 if ((imageIn.getIntColor(x, y)) < threshold) {
                     imageOut.setIntColor(x, y, imageIn.getAlphaComponent(x, y), 0, 0, 0);

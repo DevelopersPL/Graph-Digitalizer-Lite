@@ -18,22 +18,25 @@ public class RGB2YCbCr extends MarvinAbstractImagePlugin {
 
     @Override
     public void process(MarvinImage marvinImage, MarvinImage marvinImage2, MarvinAttributes marvinAttributes, MarvinImageMask marvinImageMask, boolean bool) {
-        int count = marvinImage.getWidth() * marvinImage.getHeight();
-        int r, g, b, c;
+        int a, r, g, b;
         int Y, Cb, Cr;
+        boolean[][] mask = marvinImageMask.getMaskArray();
 
-        int[] in = marvinImage.getIntColorArray(), out = marvinImage2.getIntColorArray();
-        for (int i = 0; i < count; i++) {
-            c = in[i];
-            r = (c & 0xFF0000)>>16;
-            g = (c & 0x00FF00)>>8;
-            b = (c & 0x0000FF);
+        for (int x = 0; x < marvinImage.getWidth(); x++) {
+            for (int y = 0; y < marvinImage.getHeight(); y++) {
+                if (!mask[x][y]) continue;
 
-            Y =       (int) (+ 0.299    * r + 0.587    * g + 0.114    * b) & 0xFF;
-            Cb= (int) (128   - 0.168736 * r - 0.331264 * g + 0.5      * b) & 0xFF;
-            Cr= (int) (128   + 0.5      * r - 0.418688 * g - 0.081312 * b);
+                a = marvinImage.getAlphaComponent(x, y);
+                r = marvinImage.getIntComponent0(x, y);
+                g = marvinImage.getIntComponent1(x, y);
+                b = marvinImage.getIntComponent2(x, y);
 
-            out[i] = 0xFF000000&c | Y<<16 | Cb<<8 | Cr;
+                Y =       (int) (+ 0.299    * r + 0.587    * g + 0.114    * b) & 0xFF;
+                Cb= (int) (128   - 0.168736 * r - 0.331264 * g + 0.5      * b) & 0xFF;
+                Cr= (int) (128   + 0.5      * r - 0.418688 * g - 0.081312 * b);
+
+                marvinImage2.setIntColor(x, y, a, Y, Cb, Cr);
+            }
         }
     }
 

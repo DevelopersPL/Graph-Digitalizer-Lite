@@ -44,21 +44,17 @@ public class Bernsen extends MarvinAbstractImagePlugin {
 
         int[] imgArray = gray.getIntColorArray();
 
+        int masked = 0;
         for (int x = 0; x < imageIn.getWidth(); x++) {
             for (int y = 0; y < imageIn.getHeight(); y++) {
                 if (mask != null && !mask[x][y]) continue;
                 globalMean += gray.getIntComponent0(x, y);
-            }
-        }
-        int masked = 0;
-        for (boolean[] booleans : mask) {
-            for (boolean aBoolean : booleans) {
-                if (aBoolean) ++masked;
+                ++masked;
             }
         }
         globalMean /= masked;
 
-        BoundGetter getter = new MirrorGetter(imgArray, imageIn.getWidth());
+        BoundGetter getter = new MirrorGetter(imgArray, imageIn.getWidth(), mim);
 
         for (int x = 0; x < imageIn.getWidth(); x++) {
             for (int y = 0; y < imageIn.getHeight(); y++) {

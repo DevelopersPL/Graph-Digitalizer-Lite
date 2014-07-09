@@ -36,18 +36,16 @@ class Convolution extends MarvinAbstractImagePlugin {
         double[] filter = (double[]) getAttribute("filter");
         Integer width = (Integer) getAttribute("width"),
                 height = filter.length/width;
-        
-        if (filter == null || width == null) 
-            throw new RuntimeException(
-                    "attributes 'filter' or 'width' not set"
-            );
-        
-        BoundGetter bg = new MirrorGetter(input, cWidth);
+        boolean[][] mask = mim.getMaskArray();
+
+        BoundGetter bg = new MirrorGetter(input, cWidth, mim);
         
         int xTranslation = width/2, yTranslation = height/2;
         int gray;
         for (int y = 0; y < cHeight; y++) {
             for (int x = 0; x < cWidth; x++) {
+                if (!mask[x][y]) continue;
+
                 int index = x + cWidth*y;
                 output[index] = 0;
                 for (int fy = 0; fy < height; fy++) {

@@ -33,16 +33,18 @@ public class HistogramStretching extends MarvinAbstractImagePlugin {
     public void process(MarvinImage mi, MarvinImage mi1, MarvinAttributes ma, MarvinImageMask mim, boolean bln) {
         final int w = mi.getWidth();
         final int count = w * mi.getHeight();
-        
         int[] h = new int[0x100];
         int r, g, b;
+        boolean[][] mask = mim.getMaskArray();
 
         MarvinImagePlugin plugin = new RGB2YCbCr();
         MarvinImage YCrCb = mi.clone();
-        plugin.process(mi, YCrCb);
+        plugin.process(mi, YCrCb, mim);
 
-        for (int i : YCrCb.getIntColorArray()) {
-            ++h[(0xFF0000 & i)>>16];
+        for (int x = 0; x < mi.getWidth(); x++) {
+            for (int y = 0; y < mi.getHeight(); y++) {
+                ++h[mi.getIntComponent2(x, y)>>16];
+            }
         }
 
         double[] d = new double[0x100];
@@ -59,25 +61,24 @@ public class HistogramStretching extends MarvinAbstractImagePlugin {
         }
         double minD = d[n];
 
-        int Y, Cr, Cb;
-        int[] arr = YCrCb.getIntColorArray();
-        for (int i = 0; i < count; i++) {
-            Y = (arr[i]&0xFF0000)>>16;
-            Cb = (arr[i]&0xFF00)>>8;
-            Cr = arr[i]&0xFF;
+        int a, Y, Cr, Cb;
+        for (int x = 0; x < mi.getWidth(); x++) {
+            for (int y = 0; y < mi.getHeight(); y++) {
+                if (!mask[x][y]) continue;
 
-            Y = (int) ((d[Y] - minD) * 0xFF / (1. - minD));
-            
-            r = (int) Math.abs(Y                        + 1.402   * (Cr - 128));
-            g = (int) Math.abs(Y - 0.34414 * (Cb - 128) - 0.71414 * (Cr - 128));
-            b = (int) Math.abs(Y + 1.772   * (Cb - 128));
-            
-            int fin = 0xFF000000 + ((r & 0xFF) << 16) +
-                    ((g & 0xFF) << 8) +
-                    (b & 0xFF);
-            
-            mi1.setIntColor(i%w, i/w, fin);
+                a = mi.getAlphaComponent(x, y);
+                Y = mi.getIntComponent0(x, y);
+                Cb= mi.getIntComponent1(x, y);
+                Cr= mi.getIntComponent2(x, y);
+
+                Y = (int) ((d[Y] - minD) * 0xFF / (1. - minD));
+
+                r = (int) Math.abs(Y                        + 1.402   * (Cr - 128));
+                g = (int) Math.abs(Y - 0.34414 * (Cb - 128) - 0.71414 * (Cr - 128));
+                b = (int) Math.abs(Y + 1.772   * (Cb - 128));
+
+                mi1.setIntColor(x, y, a, r, g, b);
+            }
         }
     }
-    
 }

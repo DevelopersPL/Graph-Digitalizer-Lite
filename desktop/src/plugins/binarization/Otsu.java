@@ -18,8 +18,8 @@ import marvin.util.MarvinAttributes;
  * @author Marek
  */
 public class Otsu extends MarvinAbstractImagePlugin {
-    protected MarvinImage imageIn, imageOut;
-    int colorMask;
+    private MarvinImageMask mim;
+    private MarvinImage imageIn, imageOut;
 
     @Override
     public void load() {
@@ -34,16 +34,21 @@ public class Otsu extends MarvinAbstractImagePlugin {
     public void process(MarvinImage imageIn, MarvinImage imageOut, MarvinAttributes ma, MarvinImageMask mim, boolean bln) {
         this.imageIn = imageIn;
         this.imageOut = imageOut;
-        colorMask = 0xFF;
+        this.mim = mim;
+        boolean[][]mask = mim.getMaskArray();
         
         int[] H = new int[0x100];
-        
-        for (int i : imageIn.getIntColorArray()) {
-            int r = (i&0xFF0000)>>16;
-            int g = (i&0xFF00)>>8;
-            int b = i&0xFF;
-            int gray = (int) (0.299*r + 0.587*g + 0.114*b);
-            H[gray]++;
+
+        for (int x = 0; x < imageIn.getWidth(); x++) {
+            for (int y = 0; y < imageIn.getHeight(); y++) {
+                if (!mask[x][y]) continue;
+
+                int r = imageIn.getIntComponent0(x, y);
+                int g = imageIn.getIntComponent1(x, y);
+                int b = imageIn.getIntComponent2(x, y);
+                int gray = (int) (0.299*r + 0.587*g + 0.114*b);
+                H[gray]++;
+            }
         }
 
         doTheJob(H);
@@ -71,5 +76,6 @@ public class Otsu extends MarvinAbstractImagePlugin {
 
         MarvinImagePlugin plugin = new Threshold();
         plugin.setAttribute("Threshold", (T1 + T2)/2);
+        plugin.process(imageIn, imageOut, mim);
     }
 }

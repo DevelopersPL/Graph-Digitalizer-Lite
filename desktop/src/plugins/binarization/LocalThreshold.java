@@ -32,16 +32,20 @@ public class LocalThreshold extends MarvinAbstractImagePlugin {
     @Override
     public void process(MarvinImage imageIn, MarvinImage imageOut, MarvinAttributes ma, MarvinImageMask mim, boolean bln) {
         int threshold;
-        final int hood = (int) getAttribute("hood"), elements = (int) Math.pow(2*hood + 1, 2);
+        final int hood = (int) getAttribute("hood");
+        boolean[][] mask = mim.getMaskArray();
 
-        BoundGetter getter = new MirrorGetter(imageIn.getIntColorArray(), imageIn.getWidth());
+        BoundGetter getter = new MirrorGetter(imageIn.getIntColorArray(), imageIn.getWidth(), mim);
 
         for (int y = 0; y < imageIn.getHeight(); y++) {
             for (int x = 0; x < imageIn.getWidth(); x++) {
-                int mean = 0;
+                if (mask != null && !mask[x][y]) continue;
+
+                int mean = 0, elements = 0;
                 for (int i = -hood; i <= hood; i++) {
                     for (int j = -hood; j <= hood; j++) {
                         mean += getter.get(x + i, y + j);
+                        ++elements;
                     }
                 }
                 threshold = mean/elements;
