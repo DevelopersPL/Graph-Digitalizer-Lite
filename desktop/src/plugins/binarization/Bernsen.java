@@ -70,12 +70,17 @@ public class Bernsen extends MarvinAbstractImagePlugin {
                 threshold = (max + min) / 2;
                 if (Math.abs(globalMean - threshold) > sigma) threshold = globalMean;
 
-                if ((imageIn.getIntColor(x, y)) < threshold) {
+                if ((imageIn.getIntColor(x, y)&0xFF) < threshold) {
                     imageOut.setIntColor(x, y, imageIn.getAlphaComponent(x, y), 0, 0, 0);
                 } else {
                     imageOut.setIntColor(x, y, imageIn.getAlphaComponent(x, y), 255, 255, 255);
                 }
             }
         }
+    }
+    
+    @Override
+    public String toString() {
+        return "Bernsen";
     }
 }

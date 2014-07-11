@@ -81,4 +81,9 @@ public class HistogramStretching extends MarvinAbstractImagePlugin {
             }
         }
     }
+    
+    @Override
+    public String toString() {
+        return "Wyrównanie histogramu";
+    }
 }

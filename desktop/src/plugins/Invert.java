@@ -42,12 +42,17 @@ public class Invert extends MarvinAbstractImagePlugin {
         int r, g, b;
         for (int x = 0; x < imageIn.getWidth(); x++) {
             for (int y = 0; y < imageIn.getHeight(); y++) {
-                r = (255 - (int) imageIn.getIntComponent0(x, y));
-                g = (255 - (int) imageIn.getIntComponent1(x, y));
-                b = (255 - (int) imageIn.getIntComponent2(x, y));
+                r = (255 - imageIn.getIntComponent0(x, y));
+                g = (255 - imageIn.getIntComponent1(x, y));
+                b = (255 - imageIn.getIntComponent2(x, y));
 
                 imageOut.setIntColor(x, y, r, g, b);
             }
         }
+    }
+    
+    @Override
+    public String toString() {
+        return "Odwrócenie kolorów";
     }
 }

@@ -78,4 +78,9 @@ public class Otsu extends MarvinAbstractImagePlugin {
         plugin.setAttribute("Threshold", (int)(T1 + T2)/2);
         plugin.process(imageIn, imageOut, mim);
     }
+    
+    @Override
+    public String toString() {
+        return "Otsu";
+    }
 }

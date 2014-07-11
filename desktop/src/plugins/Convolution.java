@@ -18,7 +18,16 @@ import plugins.utils.MirrorGetter;
  *
  * @author Marek
  */
-class Convolution extends MarvinAbstractImagePlugin {
+public class Convolution extends MarvinAbstractImagePlugin {
+    private final String name;
+
+    public Convolution() {
+        name = "Convolution";
+    }
+    
+    public Convolution(String name) {
+        this.name = name;
+    }
 
     @Override
     public void load() {
@@ -60,4 +69,8 @@ class Convolution extends MarvinAbstractImagePlugin {
         }
     }
     
+    @Override
+    public String toString() {
+        return name;
+    }
 }

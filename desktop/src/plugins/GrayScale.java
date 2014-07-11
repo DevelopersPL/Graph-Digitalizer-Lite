@@ -46,5 +46,9 @@ public class GrayScale extends MarvinAbstractImagePlugin {
             }
         }
     }
-    
+
+    @Override
+    public String toString() {
+        return "Odcienie szarości";
+    }
 }
