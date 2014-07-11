@@ -10,11 +10,10 @@ import marvin.image.MarvinImage;
 import marvin.io.MarvinImageIO;
 import marvin.plugin.MarvinImagePlugin;
 import marvin.util.MarvinPluginHistory;
-import plugins.binarization.Otsu;
+import plugins.HistogramStretching;
 
 import javax.swing.*;
 import java.awt.*;
-import plugins.HistogramStretching;
 
 /**
  *
@@ -270,6 +269,8 @@ public class BFrame extends javax.swing.JFrame {
     public void preProcessing() {
         resultImage = originalImage.clone();
         tempPlugin = new HistogramStretching();
+        tempPlugin.setAttribute("hood", 15);
+        tempPlugin.setAttribute("sigma", 15);
         tempPlugin.process(resultImage, resultImage);
         resultImage.update();
 
