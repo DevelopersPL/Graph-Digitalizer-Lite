@@ -263,7 +263,8 @@ public class BFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_SaveFileActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        preProcessing();
+//        preProcessing();
+        new ImgModifyForm(this).setVisible(true);
     }//GEN-LAST:event_jButton4ActionPerformed
 
     public void preProcessing() {
@@ -277,6 +278,17 @@ public class BFrame extends javax.swing.JFrame {
         imagePanelOriginal.setImage(resultImage);
     }
 
+    public void processPlugins(MarvinImagePlugin[] plugins) {
+        resultImage = originalImage.clone();
+        
+        for (MarvinImagePlugin plugin : plugins) {
+            plugin.process(resultImage, resultImage);
+        }
+        resultImage.update();
+        
+        imagePanelOriginal.setImage(resultImage);
+    }
+    
     /**
      * @param args the command line arguments
      */

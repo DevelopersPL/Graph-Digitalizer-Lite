@@ -53,7 +53,7 @@ public class Convolution extends MarvinAbstractImagePlugin {
         int gray;
         for (int y = 0; y < cHeight; y++) {
             for (int x = 0; x < cWidth; x++) {
-                if (!mask[x][y]) continue;
+                if (mask != null && !mask[x][y]) continue;
 
                 int index = x + cWidth*y;
                 output[index] = 0;

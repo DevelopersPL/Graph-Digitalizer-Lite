@@ -39,10 +39,6 @@ public class MirrorGetter implements BoundGetter {
         if (!masked(x, y)) {
             if (masked(-x, y)) x = -x;
             if (masked(x, -y)) y = -y;
-            if (masked(-x, -y)) {
-                x = -x;
-                y = -y;
-            }
         }
         if (x >= width)
             x = width - (x - width) - 1;
@@ -53,10 +49,6 @@ public class MirrorGetter implements BoundGetter {
             int endYFlipped = height - (y - height) - 1;
             if (masked(endXFlipped, y)) x = endXFlipped;
             if (masked(x, endYFlipped)) y = endYFlipped;
-            if (masked(endXFlipped, endYFlipped)) {
-                x = endXFlipped;
-                y = endYFlipped;
-            }
         }
 
         if (!masked(x, y) || x < 0 || y < 0 || x >= width || y >= height)
