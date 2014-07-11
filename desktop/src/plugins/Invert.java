@@ -1,4 +1,4 @@
-package prac1;
+package plugins;
 
 import marvin.gui.MarvinAttributesPanel;
 import marvin.image.MarvinImage;

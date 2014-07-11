@@ -64,7 +64,7 @@ public class HistogramStretching extends MarvinAbstractImagePlugin {
         int a, Y, Cr, Cb;
         for (int x = 0; x < mi.getWidth(); x++) {
             for (int y = 0; y < mi.getHeight(); y++) {
-                if (!mask[x][y]) continue;
+                if (mask != null && !mask[x][y]) continue;
 
                 a = mi.getAlphaComponent(x, y);
                 Y = mi.getIntComponent0(x, y);

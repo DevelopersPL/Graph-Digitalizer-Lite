@@ -4,8 +4,8 @@
  */
 package prac1;
 
+import plugins.Invert;
 import marvin.io.MarvinImageIO;
-import plugins.binarization.Bernsen;
 import tools.BFrame;
 
 /**
@@ -18,13 +18,6 @@ public class History extends BFrame {
 
     public History(String filename) {
         super(filename);
-
-        resultImage = originalImage.clone();
-        tempPlugin = new Bernsen();
-        tempPlugin.process(resultImage, resultImage);
-        resultImage.update();
-
-        imagePanelOriginal.setImage(resultImage);
     }
 
     /**
@@ -47,6 +40,7 @@ public class History extends BFrame {
         resultImage.update();
         //dodanie do historii
         //addToHistory("Invert");
+
 
         // wyświetlenie wyników działania programu na wykresie
         imagePanelNew.setImage(resultImage);

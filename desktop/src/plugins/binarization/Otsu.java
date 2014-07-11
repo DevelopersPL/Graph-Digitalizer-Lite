@@ -41,7 +41,7 @@ public class Otsu extends MarvinAbstractImagePlugin {
 
         for (int x = 0; x < imageIn.getWidth(); x++) {
             for (int y = 0; y < imageIn.getHeight(); y++) {
-                if (!mask[x][y]) continue;
+                if (mask != null && !mask[x][y]) continue;
 
                 int r = imageIn.getIntComponent0(x, y);
                 int g = imageIn.getIntComponent1(x, y);
@@ -75,7 +75,7 @@ public class Otsu extends MarvinAbstractImagePlugin {
         }
 
         MarvinImagePlugin plugin = new Threshold();
-        plugin.setAttribute("Threshold", (T1 + T2)/2);
+        plugin.setAttribute("Threshold", (int)(T1 + T2)/2);
         plugin.process(imageIn, imageOut, mim);
     }
 }

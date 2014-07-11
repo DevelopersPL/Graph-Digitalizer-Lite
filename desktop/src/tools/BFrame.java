@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package tools;
 
 import marvin.gui.MarvinImagePanel;
@@ -11,10 +10,11 @@ import marvin.image.MarvinImage;
 import marvin.io.MarvinImageIO;
 import marvin.plugin.MarvinImagePlugin;
 import marvin.util.MarvinPluginHistory;
-import plugins.HistogramStretching;
+import plugins.binarization.Otsu;
 
 import javax.swing.*;
 import java.awt.*;
+import plugins.HistogramStretching;
 
 /**
  *
@@ -25,7 +25,7 @@ public class BFrame extends javax.swing.JFrame {
     // GUI
     protected JButton buttonShowHistory;
     protected JButton buttonApply;
-    
+
     // Marvin Objects
     protected MarvinPluginHistory history;
     protected MarvinImagePlugin tempPlugin;
@@ -33,32 +33,31 @@ public class BFrame extends javax.swing.JFrame {
     protected MarvinImage resultImage;
     protected MarvinImagePanel imagePanelOriginal,
             imagePanelNew;
-    
-    
+
     public BFrame() {
         initComponents();
     }
+
     public BFrame(String filename) {
         initComponents();
-        
+
         imagePanelOriginal = new MarvinImagePanel();
         originalImage = MarvinImageIO.loadImage(filename);
         imagePanelOriginal.setSize(jImagePanel.getWidth(), jImagePanel.getHeight());
         imagePanelOriginal.setImage(originalImage);
-        
-        JSplitPane sp1 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,true ,jDataPanel ,jImagePanel); 
-        sp1.setOneTouchExpandable(true); 
+
+        JSplitPane sp1 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, jDataPanel, jImagePanel);
+        sp1.setOneTouchExpandable(true);
         sp1.setDividerLocation(150);
         add(sp1);
-        
+
         jImagePanel.add(imagePanelOriginal);
-        
+
         /*  Ukrycie komponentow (na pozniej kiedy nie bedziemy na poczatku wczytywac zdjecia odrazu)
-        int a = jMenuButtons.getComponentCount();
-        for (int i=0;i<a;i++)
-            jMenuButtons.getComponent(i).setEnabled(false);
-        */
-        
+         int a = jMenuButtons.getComponentCount();
+         for (int i=0;i<a;i++)
+         jMenuButtons.getComponent(i).setEnabled(false);
+         */
         setVisible(true);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -129,7 +128,12 @@ public class BFrame extends javax.swing.JFrame {
 
         jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/write.png"))); // NOI18N
 
-        jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/email.png"))); // NOI18N
+        jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/search.png"))); // NOI18N
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
         jButton5.setText("Oś X");
 
@@ -181,7 +185,7 @@ public class BFrame extends javax.swing.JFrame {
                     .addComponent(jButton5)
                     .addComponent(jButton6)
                     .addComponent(jButton1))
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
         getContentPane().add(jMenuButtons, java.awt.BorderLayout.PAGE_START);
@@ -259,49 +263,54 @@ public class BFrame extends javax.swing.JFrame {
         save();        // TODO add your handling code here:
     }//GEN-LAST:event_SaveFileActionPerformed
 
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        preProcessing();
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    public void preProcessing() {
+        resultImage = originalImage.clone();
+        tempPlugin = new HistogramStretching();
+        tempPlugin.process(resultImage, resultImage);
+        resultImage.update();
+
+        imagePanelOriginal.setImage(resultImage);
+    }
+
     /**
      * @param args the command line arguments
      */
-    public void open(){
+    public void open() {
         //System.out.print("dziala");
-        FileDialog fd =new FileDialog(this,"Wczytaj",FileDialog.LOAD);
+        FileDialog fd = new FileDialog(this, "Wczytaj", FileDialog.LOAD);
         // Ewentualnie: FileDialog fd =new FileDialog(a,"Zapisz",FileDialog.SAVE);
         fd.setVisible(true);
-        String katalog=fd.getDirectory();
-        String plik=fd.getFile();
-        System.out.println("Ścieżka: "+ katalog + plik); 
+        String katalog = fd.getDirectory();
+        String plik = fd.getFile();
+        System.out.println("Ścieżka: " + katalog + plik);
 
-            if(katalog!=null && plik!=null){
-                originalImage = MarvinImageIO.loadImage(katalog + plik);
-                imagePanelOriginal.setImage(originalImage);
-
-                resultImage = originalImage.clone();
-                tempPlugin = new HistogramStretching();
-                tempPlugin.process(resultImage, resultImage);
-                resultImage.update();
-
-                imagePanelOriginal.setImage(resultImage);
-            }
+        if (katalog != null && plik != null) {
+            originalImage = MarvinImageIO.loadImage(katalog + plik);
+            imagePanelOriginal.setImage(originalImage);
+        }
     }
 
-    public void save(){
-        if(originalImage != null){
-            FileDialog fd =new FileDialog(this,"Zapisz",FileDialog.SAVE);
-            
-            fd.setVisible(true);
-            String katalog=fd.getDirectory();
-            String plik=fd.getFile();
-            
-            System.out.println("Ścieżka: "+ katalog + plik);
-            String filename = katalog+plik;
-            MarvinImageIO.saveImage(originalImage,filename );
+    public void save() {
+        if (originalImage != null) {
+            FileDialog fd = new FileDialog(this, "Zapisz", FileDialog.SAVE);
 
-		}
-    
-    }   
- 
+            fd.setVisible(true);
+            String katalog = fd.getDirectory();
+            String plik = fd.getFile();
+
+            System.out.println("Ścieżka: " + katalog + plik);
+            String filename = katalog + plik;
+            MarvinImageIO.saveImage(originalImage, filename);
+
+        }
+
+    }
+
     //protected abstract void process();
-    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu MOpenFile;

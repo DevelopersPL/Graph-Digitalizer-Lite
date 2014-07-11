@@ -24,7 +24,7 @@ public class RGB2YCbCr extends MarvinAbstractImagePlugin {
 
         for (int x = 0; x < marvinImage.getWidth(); x++) {
             for (int y = 0; y < marvinImage.getHeight(); y++) {
-                if (!mask[x][y]) continue;
+                if (mask != null && !mask[x][y]) continue;
 
                 a = marvinImage.getAlphaComponent(x, y);
                 r = marvinImage.getIntComponent0(x, y);
