@@ -6,13 +6,6 @@
 
 package tools;
 
-import com.sun.corba.se.impl.protocol.giopmsgheaders.Message;
-import java.awt.event.WindowAdapter;
-import java.util.Arrays;
-import javax.swing.DefaultListModel;
-import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
-import javax.swing.plaf.basic.BasicListUI;
 import marvin.plugin.MarvinImagePlugin;
 import plugins.Convolution;
 import plugins.GrayScale;
@@ -20,6 +13,11 @@ import plugins.HistogramStretching;
 import plugins.Invert;
 import plugins.binarization.Bernsen;
 import plugins.binarization.Otsu;
+
+import javax.swing.*;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
+import java.util.Arrays;
 
 /**
  *
@@ -35,7 +33,6 @@ public class ImgModifyForm extends javax.swing.JFrame {
     public ImgModifyForm(final BFrame cont) {
         initComponents();
         
-        efectsStack.setModel(stack);
         stack.addListDataListener(new ListDataListener() {
 
             @Override
@@ -59,7 +56,8 @@ public class ImgModifyForm extends javax.swing.JFrame {
                 cont.processPlugins(Arrays.copyOf(plugins, plugins.length, MarvinImagePlugin[].class));
             }
         });
-        
+        efectsStack.setModel(stack);
+
     }
 
     /**
@@ -203,7 +201,7 @@ public class ImgModifyForm extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(upButton)

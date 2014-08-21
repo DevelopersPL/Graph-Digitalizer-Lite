@@ -10,9 +10,7 @@ import marvin.gui.MarvinAttributesPanel;
 import marvin.image.MarvinImage;
 import marvin.image.MarvinImageMask;
 import marvin.plugin.MarvinAbstractImagePlugin;
-import marvin.plugin.MarvinImagePlugin;
 import marvin.util.MarvinAttributes;
-import plugins.convert.RGB2YCbCr;
 
 /**
  *
@@ -30,122 +28,64 @@ public class HistogramStretching extends MarvinAbstractImagePlugin {
     }
 
 
-    public void proces(MarvinImage mi, MarvinImage mi1, MarvinAttributes ma, MarvinImageMask mim, boolean bln) {
+    public void process(MarvinImage mi, MarvinImage mi1, MarvinAttributes ma, MarvinImageMask mim, boolean bln) {
         final int w = mi.getWidth();
         final int count = w * mi.getHeight();
-        int[] h = new int[0x100];
+        int[] h = new int[256];
+        double[] d = new double[256];
+        int[] LUT = new int[256];
         int r, g, b;
         boolean[][] mask = mim.getMaskArray();
 
-        MarvinImagePlugin plugin = new RGB2YCbCr();
-        MarvinImage YCrCb = mi.clone();
-        plugin.process(mi, YCrCb, mim);
+        for (int i = 0; i < 3*8; i+=8) { // for each channel
+            int channelMask = (0xFF << i);
 
-        for (int x = 0; x < mi.getWidth(); x++) {
-            for (int y = 0; y < mi.getHeight(); y++) {
-                ++h[mi.getIntComponent0(x, y)];
+            for (int j = 0; j < 256; j++) {
+                h[j] = 0;
+                d[j] = 0;
+            }
+            for (int x = 0; x < mi.getWidth(); x++) {
+                for (int y = 0; y < mi.getHeight(); y++) {
+                    ++h[(mi.getIntColor(x, y) & channelMask) >> i];
+                }
+            }
+
+            for (int j = 0; j < 256; j++) {
+                for (int k = 0; k <= j; k++) {
+                    d[j] += h[k];
+                }
+                d[j] /= count;
+            }
+
+            int n = 0;
+            while (d[n] <= 0 && n < 0x100) {
+                n++;
+            }
+            double minD = d[n];
+
+            for (int j = 0; j < 256; j++) {
+                LUT[j] = (int) ((d[j] - minD) * 255. / (1 - minD));
+            }
+            System.out.println(d[255] + " " + minD + " " + (1 - minD));
+
+            for (int x = 0; x < mi.getWidth(); x++) {
+                for (int y = 0; y < mi.getHeight(); y++) {
+                    if (mask != null && !mask[x][y]) continue;
+
+                    r = mi.getIntColor(x, y);
+                    g = (r & channelMask) >> i;
+                    b = r & ~channelMask;
+
+                    g = LUT[g];
+
+                    mi1.setIntColor(x, y, (g << i) | b);
+                }
             }
         }
-
-        double[] d = new double[0x100];
-        for (int i = 0; i < 0xFF; i++) {
-            for (int k = 0; k <= i; k++) {
-                d[i] += h[k];
-            }
-            d[i] /= count;
-        }
-        
-        int n = 0;
-        while (d[n]<=0 && n < 0x100) {
-            n++;
-        }
-        double minD = d[n];
-
-        int [] LUT = new int[256];
-        for (int i = 0; i < 256; i++) {
-            LUT[i] = (int) ((d[i]-minD)*255./(1-minD));
-        }
-
-        int a, Y, Cr, Cb;
-        for (int x = 0; x < mi.getWidth(); x++) {
-            for (int y = 0; y < mi.getHeight(); y++) {
-                if (mask != null && !mask[x][y]) continue;
-
-                a = mi.getAlphaComponent(x, y);
-                Y = YCrCb.getIntComponent0(x, y);
-                Cb= YCrCb.getIntComponent1(x, y);
-                Cr= YCrCb.getIntComponent2(x, y);
-
-                Y = LUT[Y];
-
-                r = (int) Math.abs(Y                        + 1.402   * (Cr - 128));
-                g = (int) Math.abs(Y - 0.34414 * (Cb - 128) - 0.71414 * (Cr - 128));
-                b = (int) Math.abs(Y + 1.772   * (Cb - 128));
-
-                mi1.setIntColor(x, y, a, r, g, b);
-            }
-        }
+//
+//        plugin = new YCbCr2RGB();
+//        plugin.process(YCrCb, mi1, mim);
     }
-
-    public void process(MarvinImage mi, MarvinImage mi1, MarvinAttributes ma, MarvinImageMask mim, boolean bln) {
-        int r = mi.getWidth()*mi.getHeight();
-        int[] h = new int[256];
-        boolean[][] mask = mim.getMaskArray();
-
-        MarvinImagePlugin plugin = new RGB2YCbCr();
-        MarvinImage YCrCb = mi.clone();
-        plugin.process(mi, YCrCb, mim);
-
-        for (int x = 0; x < mi.getWidth(); x++) {
-            for (int y = 0; y < mi.getHeight(); y++) {
-                ++h[mi.getIntComponent2(x, y)];
-            }
-        }
-
-        double[] d = new double[256];
-        for (int i = 0; i < 256; ++i) {
-            if (i > 0) d[i] = d[i-1];
-            d[i] += h[i];
-            System.out.println(d[i] + " " + h[i]);
-        }
-        System.out.println(r);
-        for (int i = 0; i < 256; ++i) {
-            d[i] /= r;
-            System.out.println(d[i] + " " + h[i]);
-        }
-
-        int n = 0;
-        while (d[n] < 0)
-            ++n;
-
-        double minD = d[n];
-
-        int [] LUT = new int[256];
-        for (int i = 0; i < 256; i++) {
-            LUT[i] = (int) ((d[i]-minD)*255./(1-minD));
-        }
-
-        int a, Y, Cr, Cb, g, b;
-        for (int x = 0; x < mi.getWidth(); x++) {
-            for (int y = 0; y < mi.getHeight(); y++) {
-                if (mask != null && !mask[x][y]) continue;
-
-                a = mi.getAlphaComponent(x, y);
-                Y = YCrCb.getIntComponent0(x, y);
-                Cr= YCrCb.getIntComponent1(x, y);
-                Cb= YCrCb.getIntComponent2(x, y);
-
-                Y = LUT[Y];
-
-                r = (int) Math.abs(Y              + 1.403 * Cr);
-                g = (int) Math.abs(Y - 0.344 * Cb - 0.714 * Cr);
-                b = (int) Math.abs(Y + 1.77  * Cb);
-
-                mi1.setIntColor(x, y, a, r, g, b);
-            }
-        }
-    }
-
 
     @Override
     public String toString() {

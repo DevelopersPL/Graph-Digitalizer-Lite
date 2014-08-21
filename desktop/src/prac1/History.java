@@ -4,8 +4,8 @@
  */
 package prac1;
 
-import plugins.Invert;
 import marvin.io.MarvinImageIO;
+import plugins.Invert;
 import tools.BFrame;
 
 /**
@@ -54,6 +54,7 @@ public class History extends BFrame {
     public static void main(String args[]) {
         // nazwa wyświetlanego zdjęcia
         String filename = "./res/graph.png"; //"./res/01.jpg";
+
         new History(filename);
     }
 }
