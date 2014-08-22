@@ -16,7 +16,7 @@ import marvin.util.MarvinAttributes;
  *
  * @author Marek
  */
-public class HistogramStretching extends MarvinAbstractImagePlugin {
+public class HistogramStretching extends MPlugin {
 
     @Override
     public void load() {

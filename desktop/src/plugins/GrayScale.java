@@ -16,7 +16,7 @@ import marvin.util.MarvinAttributes;
  *
  * @author Marek
  */
-public class GrayScale extends MarvinAbstractImagePlugin {
+public class GrayScale extends MPlugin {
 
     @Override
     public void load() {

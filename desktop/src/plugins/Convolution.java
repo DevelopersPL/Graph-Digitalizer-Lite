@@ -9,7 +9,6 @@ package plugins;
 import marvin.gui.MarvinAttributesPanel;
 import marvin.image.MarvinImage;
 import marvin.image.MarvinImageMask;
-import marvin.plugin.MarvinAbstractImagePlugin;
 import marvin.util.MarvinAttributes;
 import plugins.utils.BoundGetter;
 import plugins.utils.MirrorGetter;
@@ -18,7 +17,7 @@ import plugins.utils.MirrorGetter;
  *
  * @author Marek
  */
-public class Convolution extends MarvinAbstractImagePlugin {
+public class Convolution extends MPlugin {
     private final String name;
 
     public Convolution() {

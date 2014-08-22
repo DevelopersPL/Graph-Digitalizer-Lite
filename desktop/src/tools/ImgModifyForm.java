@@ -6,11 +6,7 @@
 
 package tools;
 
-import marvin.plugin.MarvinImagePlugin;
-import plugins.Convolution;
-import plugins.GrayScale;
-import plugins.HistogramStretching;
-import plugins.Invert;
+import plugins.*;
 import plugins.binarization.Bernsen;
 import plugins.binarization.Otsu;
 
@@ -24,7 +20,7 @@ import java.util.Arrays;
  * @author Marek
  */
 public class ImgModifyForm extends javax.swing.JFrame {
-    DefaultListModel<MarvinImagePlugin> stack = new DefaultListModel<>();
+    DefaultListModel<MPlugin> stack = new DefaultListModel<>();
 
     /**
      * Creates new form ImgModifyForm
@@ -39,21 +35,21 @@ public class ImgModifyForm extends javax.swing.JFrame {
             public void intervalAdded(ListDataEvent lde) {
                 // Tutaj będzie aplikacja dodanych filtrów
                 Object[] plugins = stack.toArray();
-                cont.processPlugins(Arrays.copyOf(plugins, plugins.length, MarvinImagePlugin[].class));
+                cont.processPlugins(Arrays.copyOf(plugins, plugins.length, MPlugin[].class));
             }
 
             @Override
             public void intervalRemoved(ListDataEvent lde) {
                 // Tutaj będzie aplikacja dodanych filtrów
                 Object[] plugins = stack.toArray();
-                cont.processPlugins(Arrays.copyOf(plugins, plugins.length, MarvinImagePlugin[].class));
+                cont.processPlugins(Arrays.copyOf(plugins, plugins.length, MPlugin[].class));
             }
 
             @Override
             public void contentsChanged(ListDataEvent lde) {
                 // Tutaj będzie aplikacja dodanych filtrów
                 Object[] plugins = stack.toArray();
-                cont.processPlugins(Arrays.copyOf(plugins, plugins.length, MarvinImagePlugin[].class));
+                cont.processPlugins(Arrays.copyOf(plugins, plugins.length, MPlugin[].class));
             }
         });
         efectsStack.setModel(stack);
@@ -154,6 +150,11 @@ public class ImgModifyForm extends javax.swing.JFrame {
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
+        efectsStack.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                efectsStackMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(efectsStack);
 
         upButton.setText("Góra");
@@ -215,7 +216,7 @@ public class ImgModifyForm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void gaussButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gaussButtonActionPerformed
-        MarvinImagePlugin plugin = new Convolution("Gauss");
+        MPlugin plugin = new Convolution("Gauss");
         
         double[] gauss = { 
             1./16, 1./8, 1./16,
@@ -230,34 +231,31 @@ public class ImgModifyForm extends javax.swing.JFrame {
     }//GEN-LAST:event_gaussButtonActionPerformed
 
     private void grayScaleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_grayScaleButtonActionPerformed
-        MarvinImagePlugin plugin = new GrayScale();
+        MPlugin plugin = new GrayScale();
         
         stack.addElement(plugin);
     }//GEN-LAST:event_grayScaleButtonActionPerformed
 
     private void invertButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_invertButtonActionPerformed
-        MarvinImagePlugin plugin = new Invert();
+        MPlugin plugin = new Invert();
         
         stack.addElement(plugin);
     }//GEN-LAST:event_invertButtonActionPerformed
 
     private void otsuButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_otsuButtonActionPerformed
-        MarvinImagePlugin plugin = new Otsu();
+        MPlugin plugin = new Otsu();
         
         stack.addElement(plugin);
     }//GEN-LAST:event_otsuButtonActionPerformed
 
     private void bernsenButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bernsenButtonActionPerformed
-        MarvinImagePlugin plugin = new Bernsen();
-        
-        plugin.setAttribute("hood", 15);
-        plugin.setAttribute("sigma", 15);
+        MPlugin plugin = new Bernsen();
         
         stack.addElement(plugin);
     }//GEN-LAST:event_bernsenButtonActionPerformed
 
     private void histStretchingButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_histStretchingButtonActionPerformed
-        MarvinImagePlugin plugin = new HistogramStretching();
+        MPlugin plugin = new HistogramStretching();
         
         stack.addElement(plugin);
     }//GEN-LAST:event_histStretchingButtonActionPerformed
@@ -297,6 +295,12 @@ public class ImgModifyForm extends javax.swing.JFrame {
         }
         efectsStack.setSelectedIndices(selected);
     }//GEN-LAST:event_downButtonActionPerformed
+
+    private void efectsStackMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_efectsStackMouseClicked
+        // TODO add your handling code here:
+        if (evt.getClickCount() > 1)
+            stack.get(efectsStack.getSelectedIndices()[0]).showSettings();
+    }//GEN-LAST:event_efectsStackMouseClicked
 //
 //    /**
 //     * @param args the command line arguments

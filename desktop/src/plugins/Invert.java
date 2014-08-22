@@ -3,7 +3,6 @@ package plugins;
 import marvin.gui.MarvinAttributesPanel;
 import marvin.image.MarvinImage;
 import marvin.image.MarvinImageMask;
-import marvin.plugin.MarvinAbstractImagePlugin;
 import marvin.util.MarvinAttributes;
 
 /**
@@ -12,7 +11,7 @@ import marvin.util.MarvinAttributes;
  * @author Gabriel Ambrosio Archanjo
  * @version 1.0 02/28/2008
  */
-public class Invert extends MarvinAbstractImagePlugin {
+public class Invert extends MPlugin {
 
     @Override
     public void load() {
