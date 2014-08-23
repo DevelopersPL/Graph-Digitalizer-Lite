@@ -10,15 +10,21 @@ import marvin.image.MarvinImage;
 import marvin.io.MarvinImageIO;
 import marvin.plugin.MarvinImagePlugin;
 import marvin.util.MarvinPluginHistory;
+import plugins.HistogramStretching;
 
 import javax.swing.*;
 import java.awt.*;
+import plugins.searching_series.SimpleSeries;
 
 /**
  *
  * @author Comarch
  */
 public class BFrame extends javax.swing.JFrame {
+
+    // GUI
+    protected JButton buttonShowHistory;
+    protected JButton buttonApply;
 
     // Marvin Objects
     protected MarvinPluginHistory history;
@@ -27,11 +33,9 @@ public class BFrame extends javax.swing.JFrame {
     protected MarvinImage resultImage;
     protected MarvinImagePanel imagePanelOriginal,
             imagePanelNew;
-    private JFrame effectsWindow = new ImgModifyForm(this);
 
-    {
-        effectsWindow.setVisible(false);
-        effectsWindow.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+    public BFrame() {
+        initComponents();
     }
 
     public BFrame(String filename) {
@@ -75,7 +79,7 @@ public class BFrame extends javax.swing.JFrame {
         OpenFile = new javax.swing.JButton();
         SaveFile = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
-        effectsButton = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JSeparator();
@@ -91,15 +95,15 @@ public class BFrame extends javax.swing.JFrame {
         jMenuItem1.setText("jMenuItem1");
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
-                new Object[][]{
-                        {null, null, null, null},
-                        {null, null, null, null},
-                        {null, null, null, null},
-                        {null, null, null, null}
-                },
-                new String[]{
-                        "Title 1", "Title 2", "Title 3", "Title 4"
-                }
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
         ));
         jScrollPane1.setViewportView(jTable1);
 
@@ -123,11 +127,16 @@ public class BFrame extends javax.swing.JFrame {
         });
 
         jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/write.png"))); // NOI18N
-
-        effectsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/search.png"))); // NOI18N
-        effectsButton.addActionListener(new java.awt.event.ActionListener() {
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                effectsButtonActionPerformed(evt);
+                jButton3ActionPerformed(evt);
+            }
+        });
+
+        jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/search.png"))); // NOI18N
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
             }
         });
 
@@ -151,7 +160,7 @@ public class BFrame extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(SaveFile, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(effectsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(10, 10, 10)
                         .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -173,7 +182,7 @@ public class BFrame extends javax.swing.JFrame {
                         .addGroup(jMenuButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(SaveFile, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(OpenFile, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(effectsButton, javax.swing.GroupLayout.Alignment.TRAILING))
+                            .addComponent(jButton4, javax.swing.GroupLayout.Alignment.TRAILING))
                         .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jSeparator1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -259,10 +268,45 @@ public class BFrame extends javax.swing.JFrame {
         save();        // TODO add your handling code here:
     }//GEN-LAST:event_SaveFileActionPerformed
 
-    private void effectsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
 //        preProcessing();
-        effectsWindow.setVisible(true);
+        new ImgModifyForm(this).setVisible(true);
     }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // klikniecie olowka tymczasowa uzytecznosc dla testu algorytmow :) 
+        
+        // Kolory dla serii z obrazka domyslnego
+        // Seria 1; R=0 G=143 B=98
+        // Seria 2; 212 75 0
+        // Seria 3; 169 165 207
+        
+        resultImage = originalImage.clone();
+        tempPlugin = new SimpleSeries();
+        //tempPlugin.setAttribute("color", new Color(0,143,98));
+        //tempPlugin.setAttribute("color", new Color(212,75,0));
+        tempPlugin.setAttribute("color", new Color(169,165,207));
+        // przetworzenie zdjęcia
+        tempPlugin.process(resultImage, resultImage);
+        //zaktualizowanie obrazka
+        resultImage.update();
+
+        imagePanelOriginal.setImage(resultImage);
+        MarvinImageIO.saveImage(resultImage, "./res/out.png");
+        
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    public void preProcessing() {
+        resultImage = originalImage.clone();
+        tempPlugin = new HistogramStretching();
+        tempPlugin.setAttribute("hood", 15);
+        tempPlugin.setAttribute("sigma", 15);
+        tempPlugin.process(resultImage, resultImage);
+        resultImage.update();
+
+        imagePanelOriginal.setImage(resultImage);
+        
+    }
 
     public void processPlugins(MarvinImagePlugin[] plugins) {
         resultImage = originalImage.clone();
@@ -276,6 +320,7 @@ public class BFrame extends javax.swing.JFrame {
     }
     
     /**
+     * @param args the command line arguments
      */
     public void open() {
         //System.out.print("dziala");
@@ -317,7 +362,7 @@ public class BFrame extends javax.swing.JFrame {
     private javax.swing.JButton SaveFile;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton3;
-    private javax.swing.JButton effectsButton;
+    private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JPanel jDataPanel;
