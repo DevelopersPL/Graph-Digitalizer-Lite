@@ -14,6 +14,8 @@ import plugins.HistogramStretching;
 
 import javax.swing.*;
 import java.awt.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import plugins.searching_series.SimpleSeries;
 
 /**
@@ -52,6 +54,18 @@ public class BFrame extends javax.swing.JFrame {
         add(sp1);
 
         jImagePanel.add(imagePanelOriginal);
+
+        imagePanelOriginal.addPropertyChangeListener(new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent e) {
+                if (null != e.getPropertyName()) switch (e.getPropertyName()) {
+                    case "mouseX":
+                    case "mouseY":
+                        System.out.println(imagePanelOriginal.getMousePosition());
+                        break;
+                }
+            }
+        });
 
         /*  Ukrycie komponentow (na pozniej kiedy nie bedziemy na poczatku wczytywac zdjecia odrazu)
          int a = jMenuButtons.getComponentCount();
@@ -275,17 +289,16 @@ public class BFrame extends javax.swing.JFrame {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // klikniecie olowka tymczasowa uzytecznosc dla testu algorytmow :) 
-        
+
         // Kolory dla serii z obrazka domyslnego
         // Seria 1; R=0 G=143 B=98
         // Seria 2; 212 75 0
         // Seria 3; 169 165 207
-        
         resultImage = originalImage.clone();
         tempPlugin = new SimpleSeries();
         //tempPlugin.setAttribute("color", new Color(0,143,98));
         //tempPlugin.setAttribute("color", new Color(212,75,0));
-        tempPlugin.setAttribute("color", new Color(169,165,207));
+        tempPlugin.setAttribute("color", new Color(169, 165, 207));
         // przetworzenie zdjęcia
         tempPlugin.process(resultImage, resultImage);
         //zaktualizowanie obrazka
@@ -293,7 +306,7 @@ public class BFrame extends javax.swing.JFrame {
 
         imagePanelOriginal.setImage(resultImage);
         MarvinImageIO.saveImage(resultImage, "./res/out.png");
-        
+
     }//GEN-LAST:event_jButton3ActionPerformed
 
     public void preProcessing() {
@@ -305,20 +318,20 @@ public class BFrame extends javax.swing.JFrame {
         resultImage.update();
 
         imagePanelOriginal.setImage(resultImage);
-        
+
     }
 
     public void processPlugins(MarvinImagePlugin[] plugins) {
         resultImage = originalImage.clone();
-        
+
         for (MarvinImagePlugin plugin : plugins) {
             plugin.process(resultImage, resultImage);
         }
         resultImage.update();
-        
+
         imagePanelOriginal.setImage(resultImage);
     }
-    
+
     /**
      * @param args the command line arguments
      */
@@ -376,4 +389,5 @@ public class BFrame extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
+
 }
