@@ -6,5 +6,6 @@
     <string name="action_settings">Settings</string>
     <string name="take_picture">Take picture</string>
     <string name="load_picture">Load picture</string>
+    <string name="loadPhoto">Wczytaj zdjęcie</string>
 
 </resources>

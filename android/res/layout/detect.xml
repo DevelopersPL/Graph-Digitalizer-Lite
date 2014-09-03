@@ -10,11 +10,4 @@
         android:id="@+id/graph_display"
         android:layout_weight="1.0"/>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/process_graph"
-        android:text="Process graph"
-        android:layout_gravity="center_horizontal"/>
-
 </LinearLayout>
