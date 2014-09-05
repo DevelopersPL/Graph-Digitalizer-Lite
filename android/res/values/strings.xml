@@ -7,5 +7,12 @@
     <string name="take_picture">Take picture</string>
     <string name="load_picture">Load picture</string>
     <string name="loadPhoto">Wczytaj zdjęcie</string>
+    <string name="preprocesing_label">Wstępna obróbka</string>
+    <string name="original">Oryginał</string>
+    <string name="processed">Przetworzony</string>
+    <string name="manage_filters">Zarządzaj filtrami</string>
+    <string name="remove_effect">Usuń efekt</string>
+    <string name="add_effect">Dodaj efekt</string>
+    <string name="save_and_back">Zatwierdź i wróć</string>
 
 </resources>
