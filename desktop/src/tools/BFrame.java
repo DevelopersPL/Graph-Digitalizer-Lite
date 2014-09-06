@@ -14,6 +14,8 @@ import plugins.HistogramStretching;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import plugins.searching_series.SimpleSeries;
@@ -27,14 +29,14 @@ public class BFrame extends javax.swing.JFrame {
     // GUI
     protected JButton buttonShowHistory;
     protected JButton buttonApply;
-
+    private boolean simpleSeries;
     // Marvin Objects
     protected MarvinPluginHistory history;
     protected MarvinImagePlugin tempPlugin;
-    protected MarvinImage originalImage;
+    protected MarvinImage originalImage, zoomImage;
     protected MarvinImage resultImage;
     protected MarvinImagePanel imagePanelOriginal,
-            imagePanelNew;
+            imagePanelNew, imagePanelZoom;
 
     public BFrame() {
         initComponents();
@@ -42,9 +44,10 @@ public class BFrame extends javax.swing.JFrame {
 
     public BFrame(String filename) {
         initComponents();
-
+        simpleSeries = false;
         imagePanelOriginal = new MarvinImagePanel();
         originalImage = MarvinImageIO.loadImage(filename);
+        originalImage.resize(jImagePanel.getWidth(), jImagePanel.getHeight());
         imagePanelOriginal.setSize(jImagePanel.getWidth(), jImagePanel.getHeight());
         imagePanelOriginal.setImage(originalImage);
 
@@ -55,17 +58,72 @@ public class BFrame extends javax.swing.JFrame {
 
         jImagePanel.add(imagePanelOriginal);
 
+        imagePanelZoom = new MarvinImagePanel();
+        imagePanelZoom.setSize(jZoomPanel.getWidth(), jZoomPanel.getHeight());
+        jZoomPanel.add(imagePanelZoom);
+        //zoomImage = originalImage.clone();
+        //zoomImage.setDimension(jZoomPanel.getWidth(), jZoomPanel.getHeight());
+       
+        
         imagePanelOriginal.addPropertyChangeListener(new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent e) {
                 if (null != e.getPropertyName()) switch (e.getPropertyName()) {
                     case "mouseX":
                     case "mouseY":
-                        System.out.println(imagePanelOriginal.getMousePosition());
+                        int x=0, y=0;
+                        if(imagePanelOriginal.getMousePosition().x<= (jZoomPanel.getWidth()/2)){
+                            x = 1;
+                        }else if(imagePanelOriginal.getMousePosition().x>=(imagePanelOriginal.getWidth()-5-(jZoomPanel.getWidth()/2))){
+                            x = imagePanelOriginal.getWidth()-5-(jZoomPanel.getWidth()/2)-30;
+                        }else{
+                            x = imagePanelOriginal.getMousePosition().x - (jZoomPanel.getWidth()/2);
+                        }
+                      
+                        
+                        if(imagePanelOriginal.getMousePosition().y<=(jZoomPanel.getHeight()/2)){
+                            y= 1;
+                        }else if(imagePanelOriginal.getMousePosition().y>=imagePanelOriginal.getHeight()-(jZoomPanel.getHeight()/2)){
+                            y = imagePanelOriginal.getHeight()-(jZoomPanel.getHeight()/2)-25;
+                        }else{
+                            y = imagePanelOriginal.getMousePosition().y - (jZoomPanel.getHeight()/2);
+                        }   
+                        
+                     
+                        System.out.println("x: " + x + "    y: " + y );
+                        System.out.println("width: " + (imagePanelOriginal.getImage().getWidth()-(jZoomPanel.getWidth()/2)));
+                        zoomImage = imagePanelOriginal.getImage().clone().crop(x+35 ,y+35 , jZoomPanel.getWidth()-70, jZoomPanel.getHeight()-70);
+                        zoomImage.drawLine((zoomImage.getWidth()/2), (zoomImage.getHeight()/2)-2, (zoomImage.getWidth()/2), (zoomImage.getHeight()/2)+2, Color.red);
+                        zoomImage.drawLine((zoomImage.getWidth()/2)-2, (zoomImage.getHeight()/2), (zoomImage.getWidth()/2)+2, (zoomImage.getHeight()/2), Color.red);
+                        imagePanelZoom.setImage(zoomImage);
+                        imagePanelZoom.update();
+                        
+                        
+                        break;
+                    case "clicked":
+                        if(simpleSeries){
+                            Point p = new Point((Point)e.getNewValue());
+
+                            resultImage = originalImage.clone();
+                            tempPlugin = new SimpleSeries();
+                            int r,g,b;
+                            r = originalImage.getIntComponent0(p.x, p.y);
+                            g = originalImage.getIntComponent1(p.x, p.y);
+                            b = originalImage.getIntComponent2(p.x, p.y);
+                            tempPlugin.setAttribute("color", new Color(r, g, b));
+                            // przetworzenie zdjęcia
+                            tempPlugin.process(resultImage, resultImage);
+                            //zaktualizowanie obrazka
+                            resultImage.update();
+
+                            imagePanelOriginal.setImage(resultImage);
+                            simpleSeries = false;
+                        }
                         break;
                 }
             }
         });
+        
 
         /*  Ukrycie komponentow (na pozniej kiedy nie bedziemy na poczatku wczytywac zdjecia odrazu)
          int a = jMenuButtons.getComponentCount();
@@ -97,6 +155,7 @@ public class BFrame extends javax.swing.JFrame {
         jButton5 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JSeparator();
+        jZoomPanel = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jDataPanel = new javax.swing.JPanel();
         jImagePanel = new javax.swing.JPanel();
@@ -160,6 +219,17 @@ public class BFrame extends javax.swing.JFrame {
 
         jSeparator1.setOrientation(javax.swing.SwingConstants.VERTICAL);
 
+        javax.swing.GroupLayout jZoomPanelLayout = new javax.swing.GroupLayout(jZoomPanel);
+        jZoomPanel.setLayout(jZoomPanelLayout);
+        jZoomPanelLayout.setHorizontalGroup(
+            jZoomPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 111, Short.MAX_VALUE)
+        );
+        jZoomPanelLayout.setVerticalGroup(
+            jZoomPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
         jButton1.setText("Zaznacz Tytuł");
 
         javax.swing.GroupLayout jMenuButtonsLayout = new javax.swing.GroupLayout(jMenuButtons);
@@ -185,26 +255,32 @@ public class BFrame extends javax.swing.JFrame {
                         .addComponent(jButton6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1)))
-                .addContainerGap(543, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 412, Short.MAX_VALUE)
+                .addComponent(jZoomPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(20, 20, 20))
         );
         jMenuButtonsLayout.setVerticalGroup(
             jMenuButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jMenuButtonsLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jMenuButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(jMenuButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(jMenuButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jZoomPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jMenuButtonsLayout.createSequentialGroup()
                         .addGroup(jMenuButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(SaveFile, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(OpenFile, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton4, javax.swing.GroupLayout.Alignment.TRAILING))
-                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jSeparator1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jMenuButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton5)
-                    .addComponent(jButton6)
-                    .addComponent(jButton1))
-                .addContainerGap(14, Short.MAX_VALUE))
+                            .addGroup(jMenuButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(jMenuButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(SaveFile, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(OpenFile, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jButton4, javax.swing.GroupLayout.Alignment.TRAILING))
+                                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jSeparator1))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jMenuButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jButton5)
+                            .addComponent(jButton6)
+                            .addComponent(jButton1))
+                        .addGap(0, 8, Short.MAX_VALUE)))
+                .addContainerGap())
         );
 
         getContentPane().add(jMenuButtons, java.awt.BorderLayout.PAGE_START);
@@ -288,24 +364,7 @@ public class BFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // klikniecie olowka tymczasowa uzytecznosc dla testu algorytmow :) 
-
-        // Kolory dla serii z obrazka domyslnego
-        // Seria 1; R=0 G=143 B=98
-        // Seria 2; 212 75 0
-        // Seria 3; 169 165 207
-        resultImage = originalImage.clone();
-        tempPlugin = new SimpleSeries();
-        //tempPlugin.setAttribute("color", new Color(0,143,98));
-        //tempPlugin.setAttribute("color", new Color(212,75,0));
-        tempPlugin.setAttribute("color", new Color(169, 165, 207));
-        // przetworzenie zdjęcia
-        tempPlugin.process(resultImage, resultImage);
-        //zaktualizowanie obrazka
-        resultImage.update();
-
-        imagePanelOriginal.setImage(resultImage);
-        MarvinImageIO.saveImage(resultImage, "./res/out.png");
+        simpleSeries = true;
 
     }//GEN-LAST:event_jButton3ActionPerformed
 
@@ -388,6 +447,7 @@ public class BFrame extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTable jTable1;
+    private javax.swing.JPanel jZoomPanel;
     // End of variables declaration//GEN-END:variables
 
 }
