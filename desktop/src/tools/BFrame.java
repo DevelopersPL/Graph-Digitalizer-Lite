@@ -38,13 +38,15 @@ public class BFrame extends javax.swing.JFrame {
     protected MarvinImage resultImage;
     protected MarvinImagePanel imagePanelOriginal,
             imagePanelNew, imagePanelZoom;
-
+    protected DefaultListModel listModel;
+    
     public BFrame() {
         initComponents();
     }
 
     public BFrame(String filename) {
         initComponents();
+
         simpleSeries = false;
         imagePanelOriginal = new MarvinImagePanel();
         originalImage = MarvinImageIO.loadImage(filename);
@@ -105,22 +107,32 @@ public class BFrame extends javax.swing.JFrame {
                         if(simpleSeries){
                             Point p = new Point((Point)e.getNewValue());
                             resultImage = originalImage.clone();
-                            tempPlugin = new SimpleSeries();
+                            SimpleSeries tmpPlugin = new SimpleSeries();
+                            //tempPlugin = new SimpleSeries();
                             int r,g,b;
                             r = originalImage.getIntComponent0(p.x, p.y);
                             g = originalImage.getIntComponent1(p.x, p.y);
                             b = originalImage.getIntComponent2(p.x, p.y);
-                            tempPlugin.setAttribute("color", new Color(r, g, b));
+                            tmpPlugin.setAttribute("color", new Color(r, g, b));
                             
                             String s = txtSampling.getText();
                             if(s.equals("")){
                                 s = "0";
                             }
                             
-                            tempPlugin.setAttribute("sample", Integer.parseInt(s));
+                            tmpPlugin.setAttribute("sample", Integer.parseInt(s));
                             // przetworzenie zdjęcia
-                            tempPlugin.process(resultImage, resultImage);
-                            
+                            tmpPlugin.process(resultImage, resultImage);
+                            java.util.List list = tmpPlugin.pointList;
+                            listModel = new DefaultListModel();
+                            for(int i=0;i<list.size();i++){
+                                Point tmp = (Point) list.get(i);
+                                String txt = "X: " + tmp.x + " Y: " + tmp.y;
+                                listModel.addElement(txt);
+                                //System.out.print("a");
+                            }
+                            jPointList.setModel(listModel);
+                            //jPointList = new JList(listModel);
                             //zaktualizowanie obrazka
                             resultImage.update();
 
@@ -168,6 +180,8 @@ public class BFrame extends javax.swing.JFrame {
         txtSampling = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jDataPanel = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jPointList = new javax.swing.JList();
         jImagePanel = new javax.swing.JPanel();
         jMenuBar1 = new javax.swing.JMenuBar();
         MOpenFile = new javax.swing.JMenu();
@@ -308,15 +322,17 @@ public class BFrame extends javax.swing.JFrame {
         jDataPanel.setBackground(new java.awt.Color(204, 204, 204));
         jDataPanel.setPreferredSize(new java.awt.Dimension(150, 294));
 
+        jScrollPane2.setViewportView(jPointList);
+
         javax.swing.GroupLayout jDataPanelLayout = new javax.swing.GroupLayout(jDataPanel);
         jDataPanel.setLayout(jDataPanelLayout);
         jDataPanelLayout.setHorizontalGroup(
             jDataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 150, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
         );
         jDataPanelLayout.setVerticalGroup(
             jDataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 427, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 427, Short.MAX_VALUE)
         );
 
         getContentPane().add(jDataPanel, java.awt.BorderLayout.LINE_START);
@@ -465,7 +481,9 @@ public class BFrame extends javax.swing.JFrame {
     private javax.swing.JPanel jMenuButtons;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JList jPointList;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTable jTable1;
     private javax.swing.JPanel jZoomPanel;
