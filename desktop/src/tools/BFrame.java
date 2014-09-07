@@ -6,14 +6,6 @@
 package tools;
 
 import CSV.CSVWriter;
-import marvin.gui.MarvinImagePanel;
-import marvin.image.MarvinImage;
-import marvin.io.MarvinImageIO;
-import marvin.plugin.MarvinImagePlugin;
-import marvin.util.MarvinPluginHistory;
-import plugins.HistogramStretching;
-
-import javax.swing.*;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -21,6 +13,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.*;
+import marvin.gui.MarvinImagePanel;
+import marvin.image.MarvinImage;
+import marvin.image.MarvinImageMask;
+import marvin.io.MarvinImageIO;
+import marvin.plugin.MarvinImagePlugin;
+import marvin.util.MarvinPluginHistory;
+import plugins.HistogramStretching;
 import plugins.searching_series.SimpleSeries;
 
 /**
@@ -35,8 +35,6 @@ public class BFrame extends javax.swing.JFrame {
     private boolean simpleSeries = false;
     private boolean selectGraphMask = false;
     private boolean selectLegendMask = false;
-    private Point[] graphMask;
-    private Point[] legendMask;
     // Marvin Objects
     protected MarvinPluginHistory history;
     protected MarvinImagePlugin tempPlugin;
@@ -46,6 +44,11 @@ public class BFrame extends javax.swing.JFrame {
             imagePanelNew, imagePanelZoom;
     protected DefaultListModel listModel;
     protected java.util.List PointList;
+    // Mask
+    protected MarvinImageMask graphMask;
+    protected Point[] graphMaskCoords;
+    protected Point[] legendMaskCoords;
+    protected boolean[][] graphMaskArray;
 
     public BFrame() {
         initComponents();
@@ -54,6 +57,8 @@ public class BFrame extends javax.swing.JFrame {
     public BFrame(String filename) {
         initComponents();
 
+        graphMask = new MarvinImageMask();
+        
         imagePanelOriginal = new MarvinImagePanel();
         originalImage = MarvinImageIO.loadImage(filename);
         originalImage.resize(jImagePanel.getWidth(), jImagePanel.getHeight());
@@ -130,7 +135,7 @@ public class BFrame extends javax.swing.JFrame {
 
                                 tmpPlugin.setAttribute("sample", Integer.parseInt(s));
                                 // przetworzenie zdjęcia
-                                tmpPlugin.process(resultImage, resultImage);
+                                tmpPlugin.process(resultImage, resultImage, graphMask);
                                 PointList = tmpPlugin.pointList;
                                 listModel = new DefaultListModel();
                                 for (int i = 0; i < PointList.size(); i++) {
@@ -153,17 +158,29 @@ public class BFrame extends javax.swing.JFrame {
                                 selectGraphMask = false;
                                 jButton2.setEnabled(true);
 
-                                graphMask = (Point[]) e.getNewValue();
+                                graphMaskCoords = (Point[]) e.getNewValue();
 
-                                System.out.println("Zaznaczone koordy grafu: " + graphMask[0] + graphMask[1]);
-
+                                System.out.println("Zaznaczone koordy grafu: " + graphMaskCoords[0] + graphMaskCoords[1]);
+                                
+                                int w = (int) graphMaskCoords[1].getX() - (int) graphMaskCoords[0].getX();
+                                int h = (int) graphMaskCoords[1].getY() - (int) graphMaskCoords[0].getY();
+                                graphMask = new MarvinImageMask(resultImage.getWidth(), resultImage.getHeight(), (int) graphMaskCoords[0].getX(), (int) graphMaskCoords[0].getY(), w, h);
+                                
                             } else if (selectLegendMask) {
                                 selectLegendMask = false;
                                 jButton7.setEnabled(true);
 
-                                legendMask = (Point[]) e.getNewValue();
+                                legendMaskCoords = (Point[]) e.getNewValue();
+                                graphMaskArray = graphMask.getMaskArray();
+                                
+                                for (int xM = (int) legendMaskCoords[0].getX(); xM <= (int) legendMaskCoords[1].getX(); xM++) {
+                                    for (int yM = (int) legendMaskCoords[0].getY(); yM <= (int) legendMaskCoords[1].getY(); yM++) {
+                                        if (graphMaskArray[xM][yM])
+                                            graphMask.removePoint(xM, yM);
+                                    }
+                                }
 
-                                System.out.println("Zaznaczone koordy legendy: " + legendMask[0] + legendMask[1]);
+                                System.out.println("Zaznaczone koordy legendy: " + legendMaskCoords[0] + legendMaskCoords[1]);
                             }
                             break;
                     }
@@ -465,7 +482,6 @@ public class BFrame extends javax.swing.JFrame {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         simpleSeries = true;
-
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jCSVExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCSVExportActionPerformed
@@ -509,7 +525,6 @@ public class BFrame extends javax.swing.JFrame {
         resultImage.update();
 
         imagePanelOriginal.setImage(resultImage);
-
     }
 
     public void processPlugins(MarvinImagePlugin[] plugins) {

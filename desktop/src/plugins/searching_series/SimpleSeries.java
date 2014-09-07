@@ -58,6 +58,8 @@ public class SimpleSeries extends MarvinAbstractImagePlugin {
         g = color.getGreen();
         b = color.getBlue();
         
+        boolean[][] graphMaskArray = mask.getMaskArray();
+        
         int dr, dg, db;
         dr = r/8;
         dg = g/8;
@@ -71,6 +73,12 @@ public class SimpleSeries extends MarvinAbstractImagePlugin {
         
         for (int x = 0; x < imageIn.getWidth(); x++) {
             for (int y = 0; y < imageIn.getHeight(); y++) {
+                
+                // mask
+                if (graphMaskArray != null && !graphMaskArray[x][y]) {
+                    continue;
+                }
+                
                 if(
                 (imageIn.getIntComponent0(x, y)> r-dr && imageIn.getIntComponent0(x, y)< r+dr) && 
                 (imageIn.getIntComponent1(x, y)> g-dg && imageIn.getIntComponent1(x, y)< g+dg) &&
