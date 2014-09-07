@@ -422,8 +422,7 @@ public class BFrame extends javax.swing.JFrame {
         CSVWriter writer;
         try {
             writer = new CSVWriter(new FileWriter(csv));
-        
-        
+
         for(int i=0; i<PointList.size();i++){
             Point tmp = (Point) PointList.get(i);
             String [] val ={"x:" + tmp.x + "y:" + tmp.y};
