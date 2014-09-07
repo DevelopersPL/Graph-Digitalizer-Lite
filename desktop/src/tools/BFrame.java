@@ -5,6 +5,7 @@
  */
 package tools;
 
+import CSV.CSVWriter;
 import marvin.gui.MarvinImagePanel;
 import marvin.image.MarvinImage;
 import marvin.io.MarvinImageIO;
@@ -14,11 +15,12 @@ import plugins.HistogramStretching;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import plugins.searching_series.DataSampling;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import plugins.searching_series.SimpleSeries;
 
 /**
@@ -39,7 +41,7 @@ public class BFrame extends javax.swing.JFrame {
     protected MarvinImagePanel imagePanelOriginal,
             imagePanelNew, imagePanelZoom;
     protected DefaultListModel listModel;
-    
+    protected java.util.List PointList;
     public BFrame() {
         initComponents();
     }
@@ -123,10 +125,10 @@ public class BFrame extends javax.swing.JFrame {
                             tmpPlugin.setAttribute("sample", Integer.parseInt(s));
                             // przetworzenie zdjęcia
                             tmpPlugin.process(resultImage, resultImage);
-                            java.util.List list = tmpPlugin.pointList;
+                            PointList = tmpPlugin.pointList;
                             listModel = new DefaultListModel();
-                            for(int i=0;i<list.size();i++){
-                                Point tmp = (Point) list.get(i);
+                            for(int i=0;i<PointList.size();i++){
+                                Point tmp = (Point) PointList.get(i);
                                 String txt = "X: " + tmp.x + " Y: " + tmp.y;
                                 listModel.addElement(txt);
                                 //System.out.print("a");
@@ -179,6 +181,7 @@ public class BFrame extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         txtSampling = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
+        jCSVExport = new javax.swing.JButton();
         jDataPanel = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jPointList = new javax.swing.JList();
@@ -258,6 +261,13 @@ public class BFrame extends javax.swing.JFrame {
 
         jLabel1.setText("Próbkowanie:");
 
+        jCSVExport.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/export.png"))); // NOI18N
+        jCSVExport.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCSVExportActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jMenuButtonsLayout = new javax.swing.GroupLayout(jMenuButtons);
         jMenuButtons.setLayout(jMenuButtonsLayout);
         jMenuButtonsLayout.setHorizontalGroup(
@@ -278,14 +288,16 @@ public class BFrame extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtSampling, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(txtSampling, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 215, Short.MAX_VALUE)
+                        .addComponent(jCSVExport, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jMenuButtonsLayout.createSequentialGroup()
                         .addComponent(jButton5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 306, Short.MAX_VALUE)
+                .addGap(30, 30, 30)
                 .addComponent(jZoomPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(20, 20, 20))
         );
@@ -305,7 +317,8 @@ public class BFrame extends javax.swing.JFrame {
                                 .addGroup(jMenuButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(jMenuButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                         .addComponent(txtSampling, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(jLabel1))
+                                        .addComponent(jLabel1)
+                                        .addComponent(jCSVExport, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addComponent(jSeparator1))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -313,7 +326,7 @@ public class BFrame extends javax.swing.JFrame {
                             .addComponent(jButton5)
                             .addComponent(jButton6)
                             .addComponent(jButton1))
-                        .addGap(0, 8, Short.MAX_VALUE)))
+                        .addGap(0, 3, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -404,6 +417,25 @@ public class BFrame extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jButton3ActionPerformed
 
+    private void jCSVExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCSVExportActionPerformed
+        String csv = "F:\\output.csv";
+        CSVWriter writer;
+        try {
+            writer = new CSVWriter(new FileWriter(csv));
+        
+        
+        for(int i=0; i<PointList.size();i++){
+            Point tmp = (Point) PointList.get(i);
+            String [] val ={"x:" + tmp.x + "y:" + tmp.y};
+            writer.writeNext(val);
+        }
+        writer.close();
+        
+        } catch (IOException ex) {
+            Logger.getLogger(BFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jCSVExportActionPerformed
+
     public void preProcessing() {
         resultImage = originalImage.clone();
         tempPlugin = new HistogramStretching();
@@ -473,6 +505,7 @@ public class BFrame extends javax.swing.JFrame {
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
+    private javax.swing.JButton jCSVExport;
     private javax.swing.JPanel jDataPanel;
     private javax.swing.JPanel jImagePanel;
     private javax.swing.JLabel jLabel1;
