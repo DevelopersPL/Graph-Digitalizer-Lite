@@ -55,10 +55,7 @@ public class BFrame extends javax.swing.JFrame {
     }
 
     public BFrame(String filename) {
-        initComponents();
-
-        graphMask = new MarvinImageMask();
-        
+        initComponents();       
         imagePanelOriginal = new MarvinImagePanel();
         originalImage = MarvinImageIO.loadImage(filename);
         originalImage.resize(jImagePanel.getWidth(), jImagePanel.getHeight());
@@ -159,12 +156,10 @@ public class BFrame extends javax.swing.JFrame {
                                 jButton2.setEnabled(true);
 
                                 graphMaskCoords = (Point[]) e.getNewValue();
-
-                                System.out.println("Zaznaczone koordy grafu: " + graphMaskCoords[0] + graphMaskCoords[1]);
                                 
                                 int w = (int) graphMaskCoords[1].getX() - (int) graphMaskCoords[0].getX();
-                                int h = (int) graphMaskCoords[1].getY() - (int) graphMaskCoords[0].getY();
-                                graphMask = new MarvinImageMask(resultImage.getWidth(), resultImage.getHeight(), (int) graphMaskCoords[0].getX(), (int) graphMaskCoords[0].getY(), w, h);
+                                int h = (int) graphMaskCoords[1].getY() - (int) graphMaskCoords[0].getY();                               
+                                graphMask = new MarvinImageMask(originalImage.getWidth(), originalImage.getHeight(), (int) graphMaskCoords[0].getX(), (int) graphMaskCoords[0].getY(), w, h);
                                 
                             } else if (selectLegendMask) {
                                 selectLegendMask = false;
@@ -179,8 +174,6 @@ public class BFrame extends javax.swing.JFrame {
                                             graphMask.removePoint(xM, yM);
                                     }
                                 }
-
-                                System.out.println("Zaznaczone koordy legendy: " + legendMaskCoords[0] + legendMaskCoords[1]);
                             }
                             break;
                     }
@@ -223,12 +216,12 @@ public class BFrame extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         txtSampling = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
-        jCSVExport = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton7 = new javax.swing.JButton();
         jDataPanel = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jPointList = new javax.swing.JList();
+        jCSVExport = new javax.swing.JButton();
         jImagePanel = new javax.swing.JPanel();
         jMenuBar1 = new javax.swing.JMenuBar();
         MOpenFile = new javax.swing.JMenu();
@@ -305,13 +298,6 @@ public class BFrame extends javax.swing.JFrame {
 
         jLabel1.setText("Próbkowanie:");
 
-        jCSVExport.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/export.png"))); // NOI18N
-        jCSVExport.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCSVExportActionPerformed(evt);
-            }
-        });
-
         jButton2.setText("Zaznacz wykres");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -346,9 +332,7 @@ public class BFrame extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtSampling, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 197, Short.MAX_VALUE)
-                        .addComponent(jCSVExport, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(txtSampling, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jMenuButtonsLayout.createSequentialGroup()
                         .addComponent(jButton5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -358,9 +342,8 @@ public class BFrame extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton7)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addGap(30, 30, 30)
+                        .addComponent(jButton7)))
+                .addGap(30, 163, Short.MAX_VALUE)
                 .addComponent(jZoomPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(20, 20, 20))
         );
@@ -381,8 +364,7 @@ public class BFrame extends javax.swing.JFrame {
                                             .addComponent(SaveFile))
                                         .addGroup(jMenuButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                             .addComponent(txtSampling, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(jLabel1)
-                                            .addComponent(jCSVExport, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                            .addComponent(jLabel1)))
                                     .addComponent(jSeparator1))
                                 .addGap(12, 12, 12))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jMenuButtonsLayout.createSequentialGroup()
@@ -405,15 +387,26 @@ public class BFrame extends javax.swing.JFrame {
 
         jScrollPane2.setViewportView(jPointList);
 
+        jCSVExport.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/export.png"))); // NOI18N
+        jCSVExport.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCSVExportActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jDataPanelLayout = new javax.swing.GroupLayout(jDataPanel);
         jDataPanel.setLayout(jDataPanelLayout);
         jDataPanelLayout.setHorizontalGroup(
             jDataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
+            .addComponent(jCSVExport, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jDataPanelLayout.setVerticalGroup(
             jDataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 427, Short.MAX_VALUE)
+            .addGroup(jDataPanelLayout.createSequentialGroup()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 375, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jCSVExport, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         getContentPane().add(jDataPanel, java.awt.BorderLayout.LINE_START);
