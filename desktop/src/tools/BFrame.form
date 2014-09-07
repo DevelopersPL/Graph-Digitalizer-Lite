@@ -113,6 +113,10 @@
                           <Component id="jSeparator1" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="jButton3" min="-2" pref="45" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="txtSampling" min="-2" pref="33" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="jButton5" min="-2" max="-2" attributes="0"/>
@@ -122,7 +126,7 @@
                           <Component id="jButton1" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
-                  <EmptySpace pref="412" max="32767" attributes="0"/>
+                  <EmptySpace pref="306" max="32767" attributes="0"/>
                   <Component id="jZoomPanel" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
               </Group>
@@ -142,7 +146,13 @@
                                       <Component id="OpenFile" max="32767" attributes="0"/>
                                       <Component id="jButton4" alignment="1" min="-2" max="-2" attributes="0"/>
                                   </Group>
-                                  <Component id="jButton3" min="-2" pref="35" max="-2" attributes="0"/>
+                                  <Group type="103" alignment="1" groupAlignment="0" attributes="0">
+                                      <Group type="103" groupAlignment="3" attributes="0">
+                                          <Component id="txtSampling" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <Component id="jButton3" min="-2" pref="35" max="-2" attributes="0"/>
+                                  </Group>
                               </Group>
                               <Component id="jSeparator1" max="32767" attributes="0"/>
                           </Group>
@@ -234,6 +244,13 @@
         <Component class="javax.swing.JButton" name="jButton1">
           <Properties>
             <Property name="text" type="java.lang.String" value="Zaznacz Tytu&#x142;"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="txtSampling">
+        </Component>
+        <Component class="javax.swing.JLabel" name="jLabel1">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Pr&#xf3;bkowanie:"/>
           </Properties>
         </Component>
       </SubComponents>

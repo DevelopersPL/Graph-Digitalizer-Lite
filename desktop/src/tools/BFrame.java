@@ -18,6 +18,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import plugins.searching_series.DataSampling;
 import plugins.searching_series.SimpleSeries;
 
 /**
@@ -90,8 +91,8 @@ public class BFrame extends javax.swing.JFrame {
                         }   
                         
                      
-                        System.out.println("x: " + x + "    y: " + y );
-                        System.out.println("width: " + (imagePanelOriginal.getImage().getWidth()-(jZoomPanel.getWidth()/2)));
+                        //System.out.println("x: " + x + "    y: " + y );
+                        //System.out.println("width: " + (imagePanelOriginal.getImage().getWidth()-(jZoomPanel.getWidth()/2)));
                         zoomImage = imagePanelOriginal.getImage().clone().crop(x+35 ,y+35 , jZoomPanel.getWidth()-70, jZoomPanel.getHeight()-70);
                         zoomImage.drawLine((zoomImage.getWidth()/2), (zoomImage.getHeight()/2)-2, (zoomImage.getWidth()/2), (zoomImage.getHeight()/2)+2, Color.red);
                         zoomImage.drawLine((zoomImage.getWidth()/2)-2, (zoomImage.getHeight()/2), (zoomImage.getWidth()/2)+2, (zoomImage.getHeight()/2), Color.red);
@@ -103,7 +104,6 @@ public class BFrame extends javax.swing.JFrame {
                     case "clicked":
                         if(simpleSeries){
                             Point p = new Point((Point)e.getNewValue());
-
                             resultImage = originalImage.clone();
                             tempPlugin = new SimpleSeries();
                             int r,g,b;
@@ -111,8 +111,16 @@ public class BFrame extends javax.swing.JFrame {
                             g = originalImage.getIntComponent1(p.x, p.y);
                             b = originalImage.getIntComponent2(p.x, p.y);
                             tempPlugin.setAttribute("color", new Color(r, g, b));
+                            
+                            String s = txtSampling.getText();
+                            if(s.equals("")){
+                                s = "0";
+                            }
+                            
+                            tempPlugin.setAttribute("sample", Integer.parseInt(s));
                             // przetworzenie zdjęcia
                             tempPlugin.process(resultImage, resultImage);
+                            
                             //zaktualizowanie obrazka
                             resultImage.update();
 
@@ -157,6 +165,8 @@ public class BFrame extends javax.swing.JFrame {
         jSeparator1 = new javax.swing.JSeparator();
         jZoomPanel = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
+        txtSampling = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
         jDataPanel = new javax.swing.JPanel();
         jImagePanel = new javax.swing.JPanel();
         jMenuBar1 = new javax.swing.JMenuBar();
@@ -232,6 +242,8 @@ public class BFrame extends javax.swing.JFrame {
 
         jButton1.setText("Zaznacz Tytuł");
 
+        jLabel1.setText("Próbkowanie:");
+
         javax.swing.GroupLayout jMenuButtonsLayout = new javax.swing.GroupLayout(jMenuButtons);
         jMenuButtons.setLayout(jMenuButtonsLayout);
         jMenuButtonsLayout.setHorizontalGroup(
@@ -248,14 +260,18 @@ public class BFrame extends javax.swing.JFrame {
                         .addGap(10, 10, 10)
                         .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtSampling, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jMenuButtonsLayout.createSequentialGroup()
                         .addComponent(jButton5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 412, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 306, Short.MAX_VALUE)
                 .addComponent(jZoomPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(20, 20, 20))
         );
@@ -272,7 +288,11 @@ public class BFrame extends javax.swing.JFrame {
                                     .addComponent(SaveFile, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(OpenFile, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(jButton4, javax.swing.GroupLayout.Alignment.TRAILING))
-                                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(jMenuButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jMenuButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(txtSampling, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jLabel1))
+                                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addComponent(jSeparator1))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jMenuButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -439,6 +459,7 @@ public class BFrame extends javax.swing.JFrame {
     private javax.swing.JButton jButton6;
     private javax.swing.JPanel jDataPanel;
     private javax.swing.JPanel jImagePanel;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jMenuButtons;
@@ -448,6 +469,7 @@ public class BFrame extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTable jTable1;
     private javax.swing.JPanel jZoomPanel;
+    private javax.swing.JTextField txtSampling;
     // End of variables declaration//GEN-END:variables
 
 }
