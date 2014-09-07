@@ -27,7 +27,7 @@ public class History extends BFrame {
     protected void process() {
         resultImage = originalImage.clone();
         history.addEntry("Original", resultImage, null);
-
+        
         //
         // inwersja koloru zdjęcia
         //
@@ -38,8 +38,6 @@ public class History extends BFrame {
         tempPlugin.process(resultImage, resultImage);
         //zaktualizowanie obrazka
         resultImage.update();
-        //dodanie do historii
-        //addToHistory("Invert");
 
 
         // wyświetlenie wyników działania programu na wykresie
@@ -54,8 +52,9 @@ public class History extends BFrame {
     public static void main(String args[]) {
         // nazwa wyświetlanego zdjęcia
         String filename = "./res/graph.png"; //"./res/01.jpg";
-
+ 
         new History(filename);
+        
     }
 }
 

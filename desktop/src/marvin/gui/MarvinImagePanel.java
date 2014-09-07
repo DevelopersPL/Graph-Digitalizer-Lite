@@ -183,6 +183,7 @@ public class MarvinImagePanel extends JPanel implements MouseListener, MouseMoti
     @Override
     public void mouseClicked(MouseEvent e) {
         //clicked=true;
+        changes.firePropertyChange("clicked", 0, e.getPoint());
         repaint();
     }
 

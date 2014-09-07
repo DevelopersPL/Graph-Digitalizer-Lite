@@ -72,7 +72,6 @@ public class SimpleSeries extends MarvinAbstractImagePlugin {
                 (imageIn.getIntComponent1(x, y)> g-dg && imageIn.getIntComponent1(x, y)< g+dg) &&
                 (imageIn.getIntComponent2(x, y)> b-db && imageIn.getIntComponent2(x, y)< b+db)
                 ){
-                   
                     pointList.add(new Point(x,y));
                     imageOut.setIntColor(x, y, 255,0,0);
                     
