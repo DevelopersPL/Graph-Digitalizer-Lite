@@ -469,10 +469,14 @@ public class BFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jCSVExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCSVExportActionPerformed
-        String csv = "F:\\output.csv";
+        FileDialog fd = new FileDialog(this, "Zapisz", FileDialog.SAVE);
+        fd.setVisible(true);
+        String katalog = fd.getDirectory();
+        
+        String plik = fd.getFile();
         CSVWriter writer;
         try {
-            writer = new CSVWriter(new FileWriter(csv));
+            writer = new CSVWriter(new FileWriter(katalog + plik));
 
             for (int i = 0; i < PointList.size(); i++) {
                 Point tmp = (Point) PointList.get(i);
