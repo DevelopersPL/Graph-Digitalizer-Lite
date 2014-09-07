@@ -50,6 +50,7 @@ public class MarvinImagePanel extends JPanel implements MouseListener, MouseMoti
     private boolean fitSizeToImage;
     private int width;
     private int height;
+    final private Point[] selectedMask = new Point[2];
 
     private final PropertyChangeSupport changes = new PropertyChangeSupport(this);
 
@@ -121,7 +122,7 @@ public class MarvinImagePanel extends JPanel implements MouseListener, MouseMoti
     /**
      * Associates a MarvinImage to the image panel.
      *
-     * @param img	image�s reference to be associated with the image panel.
+     * @param img	image?s reference to be associated with the image panel.
      */
     public void setImage(MarvinImage img) {
         img.update();
@@ -173,7 +174,7 @@ public class MarvinImagePanel extends JPanel implements MouseListener, MouseMoti
     }
 
     /**
-     * Update component�s graphical representation
+     * Update component?s graphical representation
      */
     public void update() {
         image.update();
@@ -226,6 +227,13 @@ public class MarvinImagePanel extends JPanel implements MouseListener, MouseMoti
         xk = e.getX();
         yk = e.getY();
         clicked = false;
+
+        //selectedMask
+        selectedMask[0] = new Point(xp, yp);
+        selectedMask[1] = new Point(xk, yk);
+
+        changes.firePropertyChange("mask", new Point(), selectedMask);
+
         //repaint();
     }
 
