@@ -49,9 +49,25 @@ public class BFrame extends javax.swing.JFrame {
     protected Point[] graphMaskCoords;
     protected Point[] legendMaskCoords;
     protected boolean[][] graphMaskArray;
+    private boolean Xaxis;
+    private boolean Yaxis;
+    private Point Xpoint1;
+    private Point Xpoint2;
+    private Point Ypoint1;
+    private Point Ypoint2;
+    private double DistX;
+    private double DistY;
+    
 
     public BFrame() {
         initComponents();
+        Xaxis = false;
+        Yaxis = false;
+        Xpoint1 = null;
+        Xpoint2 = null;
+        Ypoint1 = null;
+        Ypoint2 = null;
+                
     }
 
     public BFrame(String filename) {
@@ -148,6 +164,15 @@ public class BFrame extends javax.swing.JFrame {
 
                                 imagePanelOriginal.setImage(resultImage);
                                 simpleSeries = false;
+                            }else if(Xaxis){
+                                if(Xpoint1 == null){
+                                    Xpoint1 = (Point) e.getNewValue();
+                                }else{
+                                    Xpoint2 = (Point) e.getNewValue();
+                                    DistX = Math.sqrt(Math.pow((Xpoint2.x-Xpoint1.x), 2) + Math.pow((Xpoint2.y-Xpoint1.y), 2));
+                                }
+                            }else if(Yaxis){
+                            
                             }
                             break;
                         case "mask":
@@ -278,6 +303,11 @@ public class BFrame extends javax.swing.JFrame {
         });
 
         jButton5.setText("Oś X");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
 
         jButton6.setText("Oś Y");
 
@@ -508,6 +538,11 @@ public class BFrame extends javax.swing.JFrame {
         selectLegendMask = true;
         jButton7.setEnabled(false);
     }//GEN-LAST:event_jButton7ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        Xaxis = true;
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton5ActionPerformed
 
     public void preProcessing() {
         resultImage = originalImage.clone();
