@@ -59,7 +59,6 @@ public class BFrame extends javax.swing.JFrame {
     private double DistY;
     private int Xvalue;
     private int Yvalue;
-    
 
     public BFrame() {
         initComponents();
@@ -69,11 +68,11 @@ public class BFrame extends javax.swing.JFrame {
         Xpoint2 = null;
         Ypoint1 = null;
         Ypoint2 = null;
-                
+
     }
 
     public BFrame(String filename) {
-        initComponents();       
+        initComponents();
         imagePanelOriginal = new MarvinImagePanel();
         originalImage = MarvinImageIO.loadImage(filename);
         originalImage.resize(jImagePanel.getWidth(), jImagePanel.getHeight());
@@ -151,7 +150,7 @@ public class BFrame extends javax.swing.JFrame {
                                 tmpPlugin.setAttribute("sample", Integer.parseInt(s));
                                 // przetworzenie zdjęcia
                                 tmpPlugin.process(resultImage, resultImage, graphMask);
-                                PointList = tmpPlugin.pointList;
+                                PointList = recalculateAxis(tmpPlugin.pointList, Xpoint1, DistY, DistX, Xvalue, Yvalue);
                                 listModel = new DefaultListModel();
                                 for (int i = 0; i < PointList.size(); i++) {
                                     Point tmp = (Point) PointList.get(i);
@@ -166,21 +165,21 @@ public class BFrame extends javax.swing.JFrame {
 
                                 imagePanelOriginal.setImage(resultImage);
                                 simpleSeries = false;
-                            }else if(Xaxis){
-                                if(Xpoint1 == null){
+                            } else if (Xaxis) {
+                                if (Xpoint1 == null) {
                                     Xpoint1 = (Point) e.getNewValue();
-                                }else{
+                                } else {
                                     Xpoint2 = (Point) e.getNewValue();
-                                    DistX = Math.sqrt(Math.pow((Xpoint2.x-Xpoint1.x), 2) + Math.pow((Xpoint2.y-Xpoint1.y), 2));
+                                    DistX = Math.sqrt(Math.pow((Xpoint2.x - Xpoint1.x), 2) + Math.pow((Xpoint2.y - Xpoint1.y), 2));
                                     Xaxis = false;
                                     Xvalue = Integer.parseInt(JOptionPane.showInputDialog("Podaj wartość przedziałki X:"));
                                 }
-                            }else if(Yaxis){
-                                if(Ypoint1 == null){
+                            } else if (Yaxis) {
+                                if (Ypoint1 == null) {
                                     Ypoint1 = (Point) e.getNewValue();
-                                }else{
+                                } else {
                                     Ypoint2 = (Point) e.getNewValue();
-                                    DistY = Math.sqrt(Math.pow((Ypoint2.x-Ypoint1.x), 2) + Math.pow((Ypoint2.y-Ypoint1.y), 2));
+                                    DistY = Math.sqrt(Math.pow((Ypoint2.x - Ypoint1.x), 2) + Math.pow((Ypoint2.y - Ypoint1.y), 2));
                                     Yaxis = false;
                                     Yvalue = Integer.parseInt(JOptionPane.showInputDialog("Podaj wartość przedziałki Y:"));
                                 }
@@ -192,22 +191,23 @@ public class BFrame extends javax.swing.JFrame {
                                 jButton2.setEnabled(true);
 
                                 graphMaskCoords = (Point[]) e.getNewValue();
-                                
+
                                 int w = (int) graphMaskCoords[1].getX() - (int) graphMaskCoords[0].getX();
-                                int h = (int) graphMaskCoords[1].getY() - (int) graphMaskCoords[0].getY();                               
+                                int h = (int) graphMaskCoords[1].getY() - (int) graphMaskCoords[0].getY();
                                 graphMask = new MarvinImageMask(originalImage.getWidth(), originalImage.getHeight(), (int) graphMaskCoords[0].getX(), (int) graphMaskCoords[0].getY(), w, h);
-                                
+
                             } else if (selectLegendMask) {
                                 selectLegendMask = false;
                                 jButton7.setEnabled(true);
 
                                 legendMaskCoords = (Point[]) e.getNewValue();
                                 graphMaskArray = graphMask.getMaskArray();
-                                
+
                                 for (int xM = (int) legendMaskCoords[0].getX(); xM <= (int) legendMaskCoords[1].getX(); xM++) {
                                     for (int yM = (int) legendMaskCoords[0].getY(); yM <= (int) legendMaskCoords[1].getY(); yM++) {
-                                        if (graphMaskArray[xM][yM])
+                                        if (graphMaskArray[xM][yM]) {
                                             graphMask.removePoint(xM, yM);
+                                        }
                                     }
                                 }
                             }
@@ -226,6 +226,24 @@ public class BFrame extends javax.swing.JFrame {
         setVisible(true);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+
+    private java.util.List recalculateAxis(java.util.List inPoints, Point Xpoint1, double DistY, double DistX, int Xvalue, int Yvalue) {
+
+        for (int i = 0; i < inPoints.size(); i++) {
+            Point tmp = (Point) inPoints.get(i);
+            
+            tmp.x -= Xpoint1.getX();
+            tmp.x /= DistX;
+            tmp.x *= Xvalue;
+            
+            
+            tmp.y -= Xpoint1.getY(); 
+            tmp.y /= DistY;
+            tmp.x *= Yvalue;
+        }
+
+        return inPoints;
     }
 
     /**
@@ -527,7 +545,7 @@ public class BFrame extends javax.swing.JFrame {
         FileDialog fd = new FileDialog(this, "Zapisz", FileDialog.SAVE);
         fd.setVisible(true);
         String katalog = fd.getDirectory();
-        
+
         String plik = fd.getFile();
         CSVWriter writer;
         try {
