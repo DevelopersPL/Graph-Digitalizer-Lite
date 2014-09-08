@@ -233,14 +233,15 @@ public class BFrame extends javax.swing.JFrame {
         for (int i = 0; i < inPoints.size(); i++) {
             Point tmp = (Point) inPoints.get(i);
             
-            tmp.x -= Xpoint1.getX();
-            tmp.x /= DistX;
-            tmp.x *= Xvalue;
+            tmp.x -= (int) Xpoint1.getX();
+            tmp.x *= (int) Xvalue;
+            tmp.x /= (int) DistX;
             
+            tmp.y -= (int) Xpoint1.getY(); 
+            tmp.y *= (int) Yvalue;
+            tmp.y /= (int) DistY;
+            tmp.y *= -1;
             
-            tmp.y -= Xpoint1.getY(); 
-            tmp.y /= DistY;
-            tmp.x *= Yvalue;
         }
 
         return inPoints;
