@@ -57,6 +57,8 @@ public class BFrame extends javax.swing.JFrame {
     private Point Ypoint2;
     private double DistX;
     private double DistY;
+    private int Xvalue;
+    private int Yvalue;
     
 
     public BFrame() {
@@ -170,9 +172,18 @@ public class BFrame extends javax.swing.JFrame {
                                 }else{
                                     Xpoint2 = (Point) e.getNewValue();
                                     DistX = Math.sqrt(Math.pow((Xpoint2.x-Xpoint1.x), 2) + Math.pow((Xpoint2.y-Xpoint1.y), 2));
+                                    Xaxis = false;
+                                    Xvalue = Integer.parseInt(JOptionPane.showInputDialog("Podaj wartość przedziałki X:"));
                                 }
                             }else if(Yaxis){
-                            
+                                if(Ypoint1 == null){
+                                    Ypoint1 = (Point) e.getNewValue();
+                                }else{
+                                    Ypoint2 = (Point) e.getNewValue();
+                                    DistY = Math.sqrt(Math.pow((Ypoint2.x-Ypoint1.x), 2) + Math.pow((Ypoint2.y-Ypoint1.y), 2));
+                                    Yaxis = false;
+                                    Yvalue = Integer.parseInt(JOptionPane.showInputDialog("Podaj wartość przedziałki Y:"));
+                                }
                             }
                             break;
                         case "mask":
@@ -310,6 +321,11 @@ public class BFrame extends javax.swing.JFrame {
         });
 
         jButton6.setText("Oś Y");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
 
         jSeparator1.setOrientation(javax.swing.SwingConstants.VERTICAL);
 
@@ -543,6 +559,11 @@ public class BFrame extends javax.swing.JFrame {
         Xaxis = true;
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        Yaxis = true;
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton6ActionPerformed
 
     public void preProcessing() {
         resultImage = originalImage.clone();
