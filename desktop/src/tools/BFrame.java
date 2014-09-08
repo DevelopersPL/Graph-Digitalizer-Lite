@@ -509,7 +509,12 @@ public class BFrame extends javax.swing.JFrame {
 
         jMenuBar1.add(MOpenFile);
 
-        jMenu2.setText("Edycja");
+        jMenu2.setText("Pomoc");
+        jMenu2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jMenu2MouseClicked(evt);
+            }
+        });
         jMenuBar1.add(jMenu2);
 
         setJMenuBar(jMenuBar1);
@@ -583,6 +588,21 @@ public class BFrame extends javax.swing.JFrame {
         Yaxis = true;
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void jMenu2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu2MouseClicked
+        
+        JOptionPane.showMessageDialog(this,
+            "1.: Naciśnij przycisk OŚ X \n"
+                    + "1a.: Naciśnij początek układu współrzędnych\n"
+                    + "1b.: Naciśnij pierwszy punkt przedziału osi X\n"
+                    + "2.: Naciśnij przycisk OS Y\n"
+                    + "2a.: Naciśnij początek układu współrzędnych\n"
+                    + "2b.: Naciśnij pierwszy punkt przedziału osi Y\n"
+                    + "3.: Naciśnij przycisk Zaznacz wykres i zaznacz prostokątem obszar wykresu\n"
+                    + "4.: Naciśnij przycisk Zaznacz legendę i zaznacz prostokątem obszar legendy\n"
+                    + "5.: Naciśnij przycisk ołówka i zaznacz serię\n"
+                    + "6.: Zapisz serię do pliku CSV klikając pod listą danych", "Pomoc", JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_jMenu2MouseClicked
 
     public void preProcessing() {
         resultImage = originalImage.clone();
