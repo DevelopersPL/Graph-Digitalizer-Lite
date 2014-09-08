@@ -4,7 +4,8 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.example.android.listviewdragginganimation.DynamicListView
+    <listviewdragginganimation.DynamicListView
+        android:id="@+id/effects_list"
         android:layout_weight="1"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" />
@@ -14,11 +15,13 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
         <Button
+            android:id="@+id/remove_effect_button"
             android:layout_weight="1"
             android:text="@string/remove_effect"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content" />
         <Button
+            android:id="@+id/add_effect_button"
             android:layout_weight="1"
             android:text="@string/add_effect"
             android:layout_width="fill_parent"
@@ -26,6 +29,7 @@
     </LinearLayout>
 
     <Button
+        android:id="@+id/apply_button"
         android:text="@string/save_and_back"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" />
