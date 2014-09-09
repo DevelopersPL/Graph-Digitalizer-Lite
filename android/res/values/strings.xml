@@ -15,5 +15,11 @@
     <string name="add_effect">Dodaj efekt</string>
     <string name="save_and_back">Zatwierdź i wróć</string>
     <string name="select_effect">Wybierz efekt</string>
+    <string name="set_new_value">Nadaj nową wartość</string>
+    <string name="sigma">Wartość sigmy</string>
+    <string name="done">Zakończone</string>
+    <string name="neighbourhood">Wielkość sąsiedztwa</string>
+    <string name="prepare_settings">Dokonaj ustawień</string>
+    <string name="save">Zapisz</string>
 
 </resources>
